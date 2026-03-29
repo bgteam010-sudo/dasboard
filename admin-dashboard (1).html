@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WellPath Admin — Appointment Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal: #2a9d8f; --teal-light: #e8f5f3; --teal-dark: #1f7a6e; --teal-glow: rgba(42,157,143,0.18);
+  --orange: #e76f51; --orange-light: #fff4f0;
+  --navy: #0f1e35; --navy-mid: #1a2f4a;
+  --sidebar-bg: #0f1e35; --sidebar-border: rgba(255,255,255,0.07);
+  --card-bg: #ffffff;
+  --surface: #f5f8fa;
+  --gray-100: #eef2f5; --gray-200: #dde4ea; --gray-400: #9aaab8; --gray-600: #4a6070;
+  --green: #22c55e; --green-light: #f0fdf4;
+  --red: #ef4444; --red-light: #fff5f5;
+  --yellow: #f59e0b; --yellow-light: #fffbeb;
+  --blue: #3b82f6; --blue-light: #eff6ff;
+  --shadow: 0 2px 12px rgba(15,30,53,0.08); --shadow-md: 0 4px 24px rgba(15,30,53,0.12);
+  --radius: 14px; --radius-sm: 9px;
+  --sidebar-w: 240px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--surface); color: var(--navy); display: flex; min-height: 100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-w); background: var(--sidebar-bg); color: white;
+  display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0;
+  z-index: 100; padding: 0;
+}
+.sidebar-logo {
+  padding: 24px 22px 20px;
+  border-bottom: 1px solid var(--sidebar-border);
+  display: flex; align-items: center; gap: 12px;
+}
+.logo-sq {
+  width: 36px; height: 36px; background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+  border-radius: 9px; display: flex; align-items: center; justify-content: center;
+}
+.sidebar-logo h1 { font-family: 'DM Serif Display', serif; font-size: 17px; line-height: 1.2; }
+.sidebar-logo span { font-size: 11px; color: rgba(255,255,255,0.45); display: block; margin-top: 1px; }
+
+.sidebar-nav { padding: 18px 12px; flex: 1; }
+.nav-section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.3); padding: 6px 10px 8px; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: var(--radius-sm); margin-bottom: 2px;
+  font-size: 13.5px; font-weight: 500; color: rgba(255,255,255,0.6);
+  cursor: pointer; transition: all 0.18s; text-decoration: none;
+}
+.nav-item:hover { background: rgba(255,255,255,0.07); color: white; }
+.nav-item.active { background: rgba(42,157,143,0.22); color: white; }
+.nav-item svg { flex-shrink: 0; opacity: 0.7; }
+.nav-item.active svg { opacity: 1; }
+.nav-badge {
+  margin-left: auto; background: var(--orange); color: white;
+  font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 20px; min-width: 22px; text-align: center;
+}
+.nav-badge.green { background: var(--green); }
+
+.sidebar-footer {
+  padding: 16px 14px; border-top: 1px solid var(--sidebar-border);
+  font-size: 12px; color: rgba(255,255,255,0.35);
+}
+.admin-pill {
+  display: flex; align-items: center; gap: 10px; padding: 10px 10px;
+  background: rgba(255,255,255,0.05); border-radius: var(--radius-sm);
+}
+.admin-avatar {
+  width: 32px; height: 32px; background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: white; flex-shrink: 0;
+}
+.admin-pill-info strong { display: block; font-size: 13px; color: white; font-weight: 600; }
+.admin-pill-info span { font-size: 11px; color: rgba(255,255,255,0.4); }
+
+/* ── MAIN ── */
+.main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+.topbar {
+  background: white; border-bottom: 1px solid var(--gray-100);
+  padding: 16px 32px; display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 50; box-shadow: var(--shadow);
+}
+.topbar-left h2 { font-size: 20px; font-weight: 700; }
+.topbar-left p { font-size: 13px; color: var(--gray-400); margin-top: 1px; }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.topbar-btn {
+  display: flex; align-items: center; gap: 7px; padding: 9px 16px;
+  border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer;
+  border: none; font-family: 'DM Sans', sans-serif; transition: all 0.18s;
+}
+.topbar-btn.outline { background: white; border: 1.5px solid var(--gray-200); color: var(--navy); }
+.topbar-btn.outline:hover { border-color: var(--teal); color: var(--teal); }
+.topbar-btn.primary { background: var(--teal); color: white; }
+.topbar-btn.primary:hover { background: var(--teal-dark); box-shadow: 0 4px 14px var(--teal-glow); }
+.notif-btn {
+  width: 38px; height: 38px; border-radius: var(--radius-sm); background: var(--gray-100);
+  border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  position: relative; transition: background 0.15s;
+}
+.notif-btn:hover { background: var(--gray-200); }
+.notif-dot {
+  width: 8px; height: 8px; background: var(--orange); border-radius: 50%;
+  position: absolute; top: 8px; right: 8px; border: 2px solid white;
+}
+
+/* ── CONTENT ── */
+.content { padding: 28px 32px; flex: 1; }
+
+/* Stats row */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+.stat-card {
+  background: white; border-radius: var(--radius); padding: 20px 22px;
+  box-shadow: var(--shadow); border: 1px solid var(--gray-100);
+  display: flex; align-items: center; gap: 16px;
+  animation: fadeUp 0.4s ease both;
+}
+.stat-card:nth-child(1) { animation-delay: 0.05s; }
+.stat-card:nth-child(2) { animation-delay: 0.1s; }
+.stat-card:nth-child(3) { animation-delay: 0.15s; }
+.stat-card:nth-child(4) { animation-delay: 0.2s; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.stat-icon {
+  width: 46px; height: 46px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.stat-num { font-size: 26px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+.stat-label { font-size: 12px; color: var(--gray-400); font-weight: 500; }
+.stat-change { font-size: 12px; margin-top: 4px; font-weight: 500; }
+.stat-change.up { color: var(--green); }
+.stat-change.pending { color: var(--orange); }
+
+/* Filter bar */
+.filter-bar {
+  background: white; border-radius: var(--radius); padding: 16px 20px;
+  box-shadow: var(--shadow); border: 1px solid var(--gray-100);
+  display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.search-wrap { position: relative; flex: 1; min-width: 200px; }
+.search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); }
+.search-input {
+  width: 100%; padding: 9px 12px 9px 38px; border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-sm); font-size: 13.5px; font-family: 'DM Sans', sans-serif;
+  outline: none; transition: border-color 0.2s; color: var(--navy);
+}
+.search-input:focus { border-color: var(--teal); }
+.filter-select {
+  padding: 9px 32px 9px 12px; border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm);
+  font-size: 13px; font-family: 'DM Sans', sans-serif; outline: none; color: var(--navy);
+  cursor: pointer; appearance: none;
+  background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%239aaab8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center;
+  transition: border-color 0.2s;
+}
+.filter-select:focus { border-color: var(--teal); }
+.filter-tabs { display: flex; gap: 4px; background: var(--gray-100); border-radius: var(--radius-sm); padding: 4px; }
+.filter-tab {
+  padding: 7px 14px; border-radius: 7px; font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all 0.15s; color: var(--gray-400); border: none; background: none;
+  font-family: 'DM Sans', sans-serif;
+}
+.filter-tab.active { background: white; color: var(--navy); box-shadow: 0 1px 6px rgba(15,30,53,0.1); }
+
+/* Table */
+.table-card {
+  background: white; border-radius: var(--radius); box-shadow: var(--shadow);
+  border: 1px solid var(--gray-100); overflow: hidden;
+  animation: fadeUp 0.4s ease 0.25s both;
+}
+.table-header {
+  padding: 18px 22px 14px; border-bottom: 1px solid var(--gray-100);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.table-header h3 { font-size: 15px; font-weight: 700; }
+.table-header span { font-size: 13px; color: var(--gray-400); }
+table { width: 100%; border-collapse: collapse; }
+thead tr { border-bottom: 1.5px solid var(--gray-100); }
+th { padding: 12px 16px; text-align: left; font-size: 11.5px; font-weight: 600; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; }
+tbody tr { border-bottom: 1px solid var(--gray-100); transition: background 0.12s; cursor: pointer; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: #fafcfd; }
+td { padding: 14px 16px; font-size: 13.5px; vertical-align: middle; }
+
+.patient-cell { display: flex; align-items: center; gap: 11px; }
+.patient-av {
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: white;
+}
+.patient-av.a { background: linear-gradient(135deg, #667eea, #764ba2); }
+.patient-av.b { background: linear-gradient(135deg, var(--teal), var(--teal-dark)); }
+.patient-av.c { background: linear-gradient(135deg, var(--orange), #f4a261); }
+.patient-av.d { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+.patient-av.e { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+.patient-name { font-weight: 600; font-size: 14px; color: var(--navy); }
+.patient-meta { font-size: 12px; color: var(--gray-400); margin-top: 1px; }
+
+.status-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 11px; border-radius: 20px; font-size: 12px; font-weight: 600; white-space: nowrap;
+}
+.status-pill.pending { background: var(--yellow-light); color: #b45309; }
+.status-pill.approved { background: var(--green-light); color: #15803d; }
+.status-pill.rejected { background: var(--red-light); color: #b91c1c; }
+.status-pill.completed { background: var(--blue-light); color: #1d4ed8; }
+.status-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.status-pill.pending .status-dot { background: #f59e0b; }
+.status-pill.approved .status-dot { background: var(--green); }
+.status-pill.rejected .status-dot { background: var(--red); }
+.status-pill.completed .status-dot { background: var(--blue); }
+
+.action-btns-cell { display: flex; gap: 6px; }
+.act-btn {
+  padding: 6px 12px; border-radius: 7px; font-size: 12px; font-weight: 600;
+  border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+  display: flex; align-items: center; gap: 5px;
+}
+.act-btn.approve { background: var(--green-light); color: #15803d; }
+.act-btn.approve:hover { background: #dcfce7; box-shadow: 0 2px 8px rgba(34,197,94,0.2); }
+.act-btn.reject { background: var(--red-light); color: #b91c1c; }
+.act-btn.reject:hover { background: #fee2e2; }
+.act-btn.notify { background: var(--teal-light); color: var(--teal-dark); }
+.act-btn.notify:hover { background: #d0eeea; }
+.act-btn.view { background: var(--gray-100); color: var(--gray-600); }
+.act-btn.view:hover { background: var(--gray-200); }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(15,30,53,0.55); backdrop-filter: blur(4px);
+  z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: white; border-radius: 20px; width: 100%; max-width: 560px;
+  box-shadow: 0 24px 80px rgba(15,30,53,0.25); animation: modalIn 0.28s cubic-bezier(0.34,1.4,0.64,1);
+  overflow: hidden; max-height: 90vh; display: flex; flex-direction: column;
+}
+@keyframes modalIn { from { transform: scale(0.9) translateY(20px); opacity: 0; } to { transform: none; opacity: 1; } }
+.modal-head {
+  padding: 22px 24px 18px; border-bottom: 1px solid var(--gray-100);
+  display: flex; align-items: flex-start; justify-content: space-between;
+}
+.modal-head h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+.modal-head p { font-size: 13px; color: var(--gray-400); }
+.modal-close {
+  width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--gray-100);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: background 0.15s; margin-top: -2px;
+}
+.modal-close:hover { background: var(--gray-200); }
+.modal-body { padding: 22px 24px; overflow-y: auto; flex: 1; }
+.modal-section { margin-bottom: 22px; }
+.modal-section:last-child { margin-bottom: 0; }
+.modal-section-title {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--gray-400); margin-bottom: 12px;
+}
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.detail-item label { font-size: 12px; color: var(--gray-400); display: block; margin-bottom: 3px; }
+.detail-item span { font-size: 14px; font-weight: 600; color: var(--navy); }
+.qa-item { background: var(--surface); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 8px; }
+.qa-item .q { font-size: 12px; color: var(--gray-400); margin-bottom: 4px; }
+.qa-item .a { font-size: 14px; font-weight: 500; color: var(--navy); }
+.modal-footer {
+  padding: 16px 24px; border-top: 1px solid var(--gray-100);
+  display: flex; gap: 10px; background: white;
+}
+.modal-btn {
+  flex: 1; padding: 11px; border-radius: var(--radius-sm); font-size: 13.5px; font-weight: 600;
+  border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.18s;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+}
+.modal-btn.approve { background: var(--green); color: white; }
+.modal-btn.approve:hover { background: #16a34a; box-shadow: 0 4px 14px rgba(34,197,94,0.3); }
+.modal-btn.reject { background: var(--red-light); color: #b91c1c; border: 1.5px solid #fca5a5; }
+.modal-btn.reject:hover { background: #fee2e2; }
+.modal-btn.notify { background: var(--teal); color: white; }
+.modal-btn.notify:hover { background: var(--teal-dark); }
+
+/* ── NOTIFY PANEL ── */
+.notify-panel {
+  position: fixed; top: 0; right: 0; bottom: 0; width: 400px;
+  background: white; box-shadow: -8px 0 40px rgba(15,30,53,0.14);
+  z-index: 300; transform: translateX(100%); transition: transform 0.3s ease;
+  display: flex; flex-direction: column;
+}
+.notify-panel.open { transform: translateX(0); }
+.notify-panel-head {
+  padding: 22px 24px; border-bottom: 1px solid var(--gray-100);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.notify-panel-head h3 { font-size: 17px; font-weight: 700; }
+.panel-close {
+  width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--gray-100);
+  cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s;
+}
+.panel-close:hover { background: var(--gray-200); }
+.notify-body { padding: 22px 24px; flex: 1; overflow-y: auto; }
+
+.notify-tabs { display: flex; gap: 4px; background: var(--gray-100); border-radius: var(--radius-sm); padding: 4px; margin-bottom: 20px; }
+.notify-tab {
+  flex: 1; padding: 8px; border-radius: 7px; text-align: center; font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all 0.15s; color: var(--gray-400); border: none; background: none; font-family: 'DM Sans', sans-serif;
+}
+.notify-tab.active { background: white; color: var(--navy); box-shadow: 0 1px 6px rgba(15,30,53,0.1); }
+
+.notify-channel { display: none; }
+.notify-channel.active { display: block; }
+
+.channel-badge {
+  display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px;
+  border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; margin-bottom: 16px;
+}
+.channel-badge.email { background: #eff6ff; color: #1d4ed8; }
+.channel-badge.whatsapp { background: #f0fdf4; color: #15803d; }
+.channel-badge.sms { background: var(--orange-light); color: #c2410c; }
+
+.form-lbl { font-size: 12px; font-weight: 600; color: var(--gray-600); margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.05em; }
+.form-inp {
+  width: 100%; border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm);
+  padding: 10px 13px; font-size: 14px; font-family: 'DM Sans', sans-serif;
+  outline: none; transition: border-color 0.2s; color: var(--navy); margin-bottom: 14px;
+}
+.form-inp:focus { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-glow); }
+.form-ta {
+  width: 100%; border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm);
+  padding: 10px 13px; font-size: 14px; font-family: 'DM Sans', sans-serif;
+  outline: none; resize: vertical; min-height: 110px; color: var(--navy);
+  transition: border-color 0.2s; margin-bottom: 14px;
+}
+.form-ta:focus { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-glow); }
+
+.template-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px; }
+.template-chip {
+  padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;
+  border: 1.5px solid var(--gray-200); background: white; cursor: pointer; color: var(--gray-600);
+  transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+}
+.template-chip:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-light); }
+
+.send-btn {
+  width: 100%; padding: 13px; background: var(--teal); border: none; border-radius: var(--radius-sm);
+  color: white; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.send-btn:hover { background: var(--teal-dark); box-shadow: 0 4px 18px var(--teal-glow); }
+
+.setup-note {
+  background: var(--yellow-light); border: 1.5px solid #fde68a; border-radius: var(--radius-sm);
+  padding: 14px 16px; margin-bottom: 16px;
+}
+.setup-note h5 { font-size: 13px; font-weight: 600; color: #92400e; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+.setup-note p { font-size: 12px; color: #78350f; line-height: 1.5; }
+.setup-note code { background: #fef3c7; padding: 1px 5px; border-radius: 4px; font-family: monospace; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 28px; right: 28px; z-index: 999;
+  background: var(--navy); color: white; padding: 14px 20px;
+  border-radius: var(--radius-sm); font-size: 14px; font-weight: 500;
+  box-shadow: var(--shadow-md); display: flex; align-items: center; gap: 10px;
+  transform: translateY(80px); opacity: 0; transition: all 0.3s ease;
+  max-width: 340px;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { border-left: 4px solid var(--green); }
+.toast.error { border-left: 4px solid var(--red); }
+.toast.info { border-left: 4px solid var(--teal); }
+
+/* Empty state */
+.empty-state { text-align: center; padding: 60px 20px; color: var(--gray-400); }
+.empty-state svg { margin: 0 auto 16px; display: block; opacity: 0.3; }
+.empty-state p { font-size: 14px; }
+
+/* Pagination */
+.pagination { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-top: 1px solid var(--gray-100); }
+.pag-info { font-size: 13px; color: var(--gray-400); }
+.pag-btns { display: flex; gap: 4px; }
+.pag-btn {
+  width: 32px; height: 32px; border-radius: 7px; border: 1.5px solid var(--gray-200);
+  background: white; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: var(--navy); transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+}
+.pag-btn:hover { border-color: var(--teal); color: var(--teal); }
+.pag-btn.active { background: var(--teal); color: white; border-color: var(--teal); }
+
+/* Overlay backdrop for panel */
+.panel-backdrop {
+  position: fixed; inset: 0; z-index: 250;
+  background: transparent; display: none;
+}
+.panel-backdrop.open { display: block; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-sq">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+    </div>
+    <div>
+      <h1>WellPath</h1>
+      <span>Admin Panel</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Main</div>
+    <a class="nav-item active" href="#">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+    <a class="nav-item" href="#">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Appointments
+      <span class="nav-badge" id="sidebarPending">0</span>
+    </a>
+    <a class="nav-item" href="#">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Patients
+    </a>
+    <a class="nav-item" href="#">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.22 1.18 2 2 0 012.2 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.18 6.18z"/></svg>
+      Notifications
+      <span class="nav-badge green" id="sidebarNotifBadge">0</span>
+    </a>
+
+    <div class="nav-section-label" style="margin-top:16px">Settings</div>
+    <a class="nav-item" href="#">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
+      Configuration
+    </a>
+    <a class="nav-item" href="page1-departments.html" target="_blank">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Patient Portal
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="admin-pill">
+      <div class="admin-avatar">DM</div>
+      <div class="admin-pill-info">
+        <strong>Dr. Meera Kapoor</strong>
+        <span>Provider</span>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <h2>Appointment Dashboard</h2>
+      <p id="todayDate">Loading...</p>
+    </div>
+    <div class="topbar-right">
+      <!-- Live indicator -->
+      <div id="liveIndicator" style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--gray-400);padding:6px 12px;background:var(--gray-100);border-radius:20px">
+        <span style="width:7px;height:7px;border-radius:50%;background:var(--gray-300);flex-shrink:0" id="liveDot"></span>
+        <span id="liveLabel">Connecting…</span>
+      </div>
+      <button class="topbar-btn outline" onclick="exportCSV()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export CSV
+      </button>
+      <button class="topbar-btn primary" onclick="openNotifyPanel(null)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.22 1.18 2 2 0 012.2 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.18 6.18z"/></svg>
+        Send Notification
+      </button>
+      <button class="notif-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <div class="notif-dot"></div>
+      </button>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#eff6ff">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <div>
+          <div class="stat-num" id="statTotal">0</div>
+          <div class="stat-label">Total Appointments</div>
+          <div class="stat-change up">↑ All time</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:var(--yellow-light)">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        </div>
+        <div>
+          <div class="stat-num" id="statPending">0</div>
+          <div class="stat-label">Awaiting Approval</div>
+          <div class="stat-change pending" id="statPendingNote">Needs action</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:var(--green-light)">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
+        </div>
+        <div>
+          <div class="stat-num" id="statApproved">0</div>
+          <div class="stat-label">Approved</div>
+          <div class="stat-change up">Confirmed</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:var(--teal-light)">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07"/></svg>
+        </div>
+        <div>
+          <div class="stat-num" id="statNotified">0</div>
+          <div class="stat-label">Notified</div>
+          <div class="stat-change up">Via all channels</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <div class="search-wrap">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="text" class="search-input" id="searchInput" placeholder="Search patient name, service..." oninput="renderTable()">
+      </div>
+      <select class="filter-select" id="statusFilter" onchange="renderTable()">
+        <option value="">All Statuses</option>
+        <option value="pending">Pending</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
+        <option value="completed">Completed</option>
+      </select>
+      <select class="filter-select" id="serviceFilter" onchange="renderTable()">
+        <option value="">All Services</option>
+        <option value="Weight Loss Consultation">Weight Loss</option>
+        <option value="Body Composition Analysis">Body Composition</option>
+        <option value="Follow-up Session">Follow-up</option>
+      </select>
+      <div class="filter-tabs">
+        <button class="filter-tab active" onclick="setDateFilter('all',this)">All</button>
+        <button class="filter-tab" onclick="setDateFilter('today',this)">Today</button>
+        <button class="filter-tab" onclick="setDateFilter('week',this)">This Week</button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-card">
+      <div class="table-header">
+        <h3>All Appointments</h3>
+        <span id="tableCount">0 records</span>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>Patient</th>
+              <th>Service</th>
+              <th>Date &amp; Time</th>
+              <th>Status</th>
+              <th>Notified</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr><td colspan="6"><div class="empty-state"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg><p>No appointments yet. Patients will appear here once they book.</p></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <span class="pag-info" id="pagInfo">Showing 0 of 0</span>
+        <div class="pag-btns" id="pagBtns"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- PATIENT DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <h3 id="modalName">Patient Name</h3>
+        <p id="modalSubtitle">Service · Date</p>
+      </div>
+      <button class="modal-close" onclick="closeModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <div class="modal-section-title">Patient Details</div>
+        <div class="detail-grid" id="modalDetails"></div>
+      </div>
+      <div class="modal-section" id="qaSection">
+        <div class="modal-section-title">Health Questionnaire Answers</div>
+        <div id="modalQA"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn approve" id="modalApproveBtn" onclick="approveFromModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+        Approve
+      </button>
+      <button class="modal-btn reject" id="modalRejectBtn" onclick="rejectFromModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        Reject
+      </button>
+      <button class="modal-btn notify" onclick="notifyFromModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8"/></svg>
+        Notify Patient
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFY PANEL -->
+<div class="panel-backdrop" id="panelBackdrop" onclick="closeNotifyPanel()"></div>
+<div class="notify-panel" id="notifyPanel">
+  <div class="notify-panel-head">
+    <div>
+      <h3>Send Notification</h3>
+      <p style="font-size:13px;color:var(--gray-400);margin-top:3px" id="notifyTarget">Select a patient</p>
+    </div>
+    <button class="panel-close" onclick="closeNotifyPanel()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <div class="notify-body">
+    <div class="notify-tabs">
+      <button class="notify-tab active" onclick="switchNotifTab('email',this)">📧 Email</button>
+      <button class="notify-tab" onclick="switchNotifTab('whatsapp',this)">💬 WhatsApp</button>
+      <button class="notify-tab" onclick="switchNotifTab('sms',this)">📱 SMS</button>
+    </div>
+
+    <!-- EMAIL -->
+    <div class="notify-channel active" id="tab-email">
+      <div class="setup-note">
+        <h5>⚙️ Setup Required</h5>
+        <p>Uses <strong>EmailJS</strong> (free). Go to <code>emailjs.com</code> → create account → get your <code>SERVICE_ID</code>, <code>TEMPLATE_ID</code> &amp; <code>PUBLIC_KEY</code> → paste below and uncomment the send code.</p>
+      </div>
+      <div class="channel-badge email">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Email via EmailJS (Free)
+      </div>
+      <label class="form-lbl">To Email</label>
+      <input class="form-inp" id="emailTo" type="email" placeholder="patient@email.com">
+      <label class="form-lbl">Subject</label>
+      <input class="form-inp" id="emailSubject" value="Your appointment has been approved — WellPath Clinic">
+      <label class="form-lbl">Message</label>
+      <div class="template-chips">
+        <button class="template-chip" onclick="loadTemplate('email','approved')">✅ Approved</button>
+        <button class="template-chip" onclick="loadTemplate('email','rejected')">❌ Rejected</button>
+        <button class="template-chip" onclick="loadTemplate('email','reminder')">⏰ Reminder</button>
+        <button class="template-chip" onclick="loadTemplate('email','custom')">✏️ Custom</button>
+      </div>
+      <textarea class="form-ta" id="emailBody" placeholder="Type your message here..."></textarea>
+
+      <details style="margin-bottom:16px">
+        <summary style="font-size:12px;font-weight:600;color:var(--gray-600);cursor:pointer;margin-bottom:8px">EmailJS Configuration</summary>
+        <input class="form-inp" id="ejs_service" placeholder="Service ID (e.g. service_abc123)">
+        <input class="form-inp" id="ejs_template" placeholder="Template ID (e.g. template_xyz456)">
+        <input class="form-inp" id="ejs_key" placeholder="Public Key (e.g. abc123XYZ...)">
+        <p style="font-size:11px;color:var(--gray-400)">These are stored only in this browser session.</p>
+      </details>
+
+      <button class="send-btn" onclick="sendEmail()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Send Email
+      </button>
+    </div>
+
+    <!-- WHATSAPP -->
+    <div class="notify-channel" id="tab-whatsapp">
+      <div class="setup-note">
+        <h5>⚙️ Setup Required</h5>
+        <p>Uses <strong>Twilio WhatsApp API</strong>. Sign up at <code>twilio.com</code> → get Account SID &amp; Auth Token → enable WhatsApp Sandbox. Then replace the backend URL below with your server endpoint.</p>
+      </div>
+      <div class="channel-badge whatsapp">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        WhatsApp via Twilio
+      </div>
+      <label class="form-lbl">WhatsApp Number (with country code)</label>
+      <input class="form-inp" id="waNumber" placeholder="+919876543210">
+      <label class="form-lbl">Message</label>
+      <div class="template-chips">
+        <button class="template-chip" onclick="loadTemplate('wa','approved')">✅ Approved</button>
+        <button class="template-chip" onclick="loadTemplate('wa','reminder')">⏰ Reminder</button>
+        <button class="template-chip" onclick="loadTemplate('wa','custom')">✏️ Custom</button>
+      </div>
+      <textarea class="form-ta" id="waBody" placeholder="Hi {name}, your appointment is confirmed..."></textarea>
+
+      <div style="background:var(--gray-100);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:16px">
+        <p style="font-size:12px;font-weight:600;color:var(--gray-600);margin-bottom:8px">Backend API URL</p>
+        <input class="form-inp" id="waApiUrl" style="margin-bottom:0" placeholder="https://your-server.com/api/whatsapp" value="https://your-server.com/api/whatsapp">
+        <p style="font-size:11px;color:var(--gray-400);margin-top:6px">Your server must relay the message to Twilio (to avoid exposing credentials in browser).</p>
+      </div>
+
+      <button class="send-btn" style="background:#25D366" onclick="sendWhatsApp()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Send WhatsApp
+      </button>
+
+      <div style="margin-top:14px;background:var(--teal-light);border-radius:var(--radius-sm);padding:12px 14px">
+        <p style="font-size:12px;font-weight:600;color:var(--teal-dark);margin-bottom:4px">💡 Quick Option</p>
+        <p style="font-size:12px;color:var(--gray-700)">Or open WhatsApp Web directly with a pre-filled message:</p>
+        <button onclick="openWhatsAppWeb()" style="margin-top:8px;background:var(--teal);color:white;border:none;padding:7px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">Open WhatsApp Web ↗</button>
+      </div>
+    </div>
+
+    <!-- SMS -->
+    <div class="notify-channel" id="tab-sms">
+      <div class="setup-note">
+        <h5>⚙️ Setup Required</h5>
+        <p>Uses <strong>Twilio SMS</strong>. Get credentials at <code>twilio.com</code> and set up a backend endpoint. Direct SMS from browser requires a server relay for security.</p>
+      </div>
+      <div class="channel-badge sms">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07"/></svg>
+        SMS via Twilio
+      </div>
+      <label class="form-lbl">Phone Number</label>
+      <input class="form-inp" id="smsNumber" placeholder="+919876543210">
+      <label class="form-lbl">SMS Message (160 chars)</label>
+      <div class="template-chips">
+        <button class="template-chip" onclick="loadTemplate('sms','approved')">✅ Approved</button>
+        <button class="template-chip" onclick="loadTemplate('sms','reminder')">⏰ Reminder</button>
+      </div>
+      <textarea class="form-ta" id="smsBody" style="min-height:80px" maxlength="320" placeholder="WellPath: Your appointment is confirmed for..."></textarea>
+      <p id="smsCharCount" style="font-size:12px;color:var(--gray-400);text-align:right;margin-bottom:12px">0 / 160</p>
+
+      <button class="send-btn" style="background:var(--orange)" onclick="sendSMS()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07"/></svg>
+        Send SMS
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script type="module">
+// ══════════════════════════════════════════════════════
+//  FIREBASE CONFIG — paste your keys from Firebase Console
+//  Project Settings → Your Apps → Web app → Config
+// ══════════════════════════════════════════════════════
+import { initializeApp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getFirestore, collection, onSnapshot, doc,
+  updateDoc, query, orderBy, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey:            "AIzaSyCchLfleDnJVGHopbQnYN4RoLFLpf_cTL0",
+  authDomain:        "wellpath-clinic.firebaseapp.com",
+  projectId:         "wellpath-clinic",
+  storageBucket:     "wellpath-clinic.firebasestorage.app",
+  messagingSenderId: "1012769542606",
+  appId:             "1:1012769542606:web:a8ceb76fc16bf460cadb9f"
+};
+// ══════════════════════════════════════════════════════
+
+const fbApp = initializeApp(firebaseConfig);
+const db    = getFirestore(fbApp);
+
+// ── Local state — populated from Firestore ────────────
+const avatarColors = ['a','b','c','d','e'];
+let appointments = [];   // will be filled by real-time listener
+
+// ── Real-time listener ────────────────────────────────
+// Whenever the DB changes (new booking, status update), the
+// dashboard updates automatically — no refresh needed.
+const q = query(collection(db, 'appointments'), orderBy('createdAt', 'desc'));
+onSnapshot(q, (snapshot) => {
+  appointments = snapshot.docs.map((docSnap, i) => {
+    const d = docSnap.data();
+    return {
+      _docId: docSnap.id,
+      id:     i,
+      name:    d.name    || '—',
+      age:     d.age     || '—',
+      gender:  d.gender  || '—',
+      phone:   d.phone   || '—',
+      email:   d.email   || '—',
+      service: d.service || 'Weight Loss Consultation',
+      date:    d.date    || '—',
+      time:    d.time    || '—',
+      status:  d.status  || 'pending',
+      notified: d.notified || false,
+      ref:     d.ref     || '—',
+      qa:      d.qa      || {}
+    };
+  });
+  // Push into global scope so non-module functions can access
+  window.appointments = appointments;
+  if (typeof updateStats === 'function') updateStats();
+  if (typeof renderTable === 'function') renderTable();
+  if (typeof window._setLiveConnected === 'function') window._setLiveConnected();
+}, (err) => {
+  console.error('Firestore listen error:', err);
+  if (typeof showToast === 'function') showToast('error', '⚠️ Could not connect to database. Check your Firebase config.');
+  if (typeof window._setLiveError === 'function') window._setLiveError();
+});
+
+// ── Status update — writes back to Firestore ──────────
+async function setStatus(docId, status) {
+  try {
+    await updateDoc(doc(db, 'appointments', docId), {
+      status,
+      updatedAt: serverTimestamp()
+    });
+  } catch(e) {
+    showToast('error', 'Failed to update status: ' + e.message);
+  }
+}
+
+async function setNotified(docId) {
+  try {
+    await updateDoc(doc(db, 'appointments', docId), {
+      notified: true,
+      updatedAt: serverTimestamp()
+    });
+  } catch(e) { console.error(e); }
+}
+
+// ── Expose helpers to global scope (needed for onclick="" ──
+window._fbSetStatus   = setStatus;
+window._fbSetNotified = setNotified;
+window._appointments  = appointments; // reference kept live
+
+let currentModalId = null;
+let currentNotifyId = null;
+let currentFilter = 'all';
+const PAGE_SIZE = 8;
+let currentPage = 1;
+
+// ── INIT ──
+window.appointments = []; // will be populated by Firebase onSnapshot
+document.getElementById('todayDate').textContent = new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+// Stats + table will render once onSnapshot fires
+updateStats();
+renderTable();
+document.getElementById('smsBody').addEventListener('input', function() {
+  document.getElementById('smsCharCount').textContent = this.value.length + ' / 160';
+});
+
+// Live connection indicator — updated by onSnapshot in the module above
+window._setLiveConnected = function() {
+  const dot   = document.getElementById('liveDot');
+  const label = document.getElementById('liveLabel');
+  if (!dot) return;
+  dot.style.background   = '#22c55e';
+  dot.style.boxShadow    = '0 0 0 3px rgba(34,197,94,0.25)';
+  label.textContent      = 'Live';
+  label.style.color      = '#15803d';
+};
+window._setLiveError = function() {
+  const dot   = document.getElementById('liveDot');
+  const label = document.getElementById('liveLabel');
+  if (!dot) return;
+  dot.style.background   = '#ef4444';
+  label.textContent      = 'Offline';
+  label.style.color      = '#b91c1c';
+};
+
+function updateStats() {
+  const p = window.appointments.filter(a => a.status === 'pending').length;
+  const ap = window.appointments.filter(a => a.status === 'approved').length;
+  const nt = window.appointments.filter(a => a.notified).length;
+  document.getElementById('statTotal').textContent = window.appointments.length;
+  document.getElementById('statPending').textContent = p;
+  document.getElementById('statApproved').textContent = ap;
+  document.getElementById('statNotified').textContent = nt;
+  document.getElementById('sidebarPending').textContent = p;
+  document.getElementById('sidebarNotifBadge').textContent = nt;
+  document.getElementById('statPendingNote').textContent = p > 0 ? `${p} need action` : 'All clear!';
+}
+
+// ── FILTER / RENDER ──
+function setDateFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  currentPage = 1;
+  renderTable();
+}
+
+function getFiltered() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const status = document.getElementById('statusFilter').value;
+  const service = document.getElementById('serviceFilter').value;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const weekEnd = new Date(today); weekEnd.setDate(weekEnd.getDate() + 7);
+  return window.appointments.filter(a => {
+    if (search && !a.name.toLowerCase().includes(search) && !a.service.toLowerCase().includes(search) && !a.ref.toLowerCase().includes(search)) return false;
+    if (status && a.status !== status) return false;
+    if (service && a.service !== service) return false;
+    return true;
+  });
+}
+
+function renderTable() {
+  const filtered = getFiltered();
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const page = filtered.slice(start, start + PAGE_SIZE);
+  const tbody = document.getElementById('tableBody');
+  document.getElementById('tableCount').textContent = filtered.length + ' record' + (filtered.length !== 1 ? 's' : '');
+  document.getElementById('pagInfo').textContent = `Showing ${Math.min(start+1, filtered.length)}–${Math.min(start+PAGE_SIZE, filtered.length)} of ${filtered.length}`;
+
+  if (!page.length) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg><p>No appointments match your filters.</p></div></td></tr>`;
+    document.getElementById('pagBtns').innerHTML = '';
+    return;
+  }
+
+  tbody.innerHTML = page.map(a => {
+    const av = avatarColors[a.id % avatarColors.length];
+    const initials = a.name.split(' ').map(n=>n[0]).join('').slice(0,2);
+    const statusClass = a.status;
+    const statusLabel = a.status.charAt(0).toUpperCase() + a.status.slice(1);
+    const notifBadge = a.notified
+      ? `<span style="color:#15803d;font-size:12px;font-weight:600">✓ Sent</span>`
+      : `<span style="color:var(--gray-400);font-size:12px">—</span>`;
+    const actionBtns = a.status === 'pending'
+      ? `<button class="act-btn approve" onclick="quickApprove(${a.id},event)">✓ Approve</button>
+         <button class="act-btn reject" onclick="quickReject(${a.id},event)">✗ Reject</button>`
+      : `<button class="act-btn notify" onclick="openNotifyPanel(${a.id},event)">
+           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07"/></svg>Notify
+         </button>`;
+    return `<tr onclick="openModal(${a.id})">
+      <td><div class="patient-cell">
+        <div class="patient-av ${av}">${initials}</div>
+        <div><div class="patient-name">${a.name}</div><div class="patient-meta">${a.age}y · ${a.gender} · ${a.ref}</div></div>
+      </div></td>
+      <td style="font-size:13px;max-width:160px">${a.service}</td>
+      <td style="font-size:13px"><strong>${a.date}</strong><br><span style="color:var(--gray-400)">${a.time}</span></td>
+      <td><span class="status-pill ${statusClass}"><span class="status-dot"></span>${statusLabel}</span></td>
+      <td>${notifBadge}</td>
+      <td><div class="action-btns-cell">
+        ${actionBtns}
+        <button class="act-btn view" onclick="openModal(${a.id},event)">View</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+
+  // Pagination
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const pagBtns = document.getElementById('pagBtns');
+  pagBtns.innerHTML = '';
+  for (let i = 1; i <= totalPages; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'pag-btn' + (i === currentPage ? ' active' : '');
+    btn.textContent = i;
+    btn.onclick = () => { currentPage = i; renderTable(); };
+    pagBtns.appendChild(btn);
+  }
+}
+
+// ── QUICK ACTIONS — write to Firestore, onSnapshot auto-re-renders ──
+function quickApprove(id, e) {
+  if (e) e.stopPropagation();
+  const a = window.appointments.find(x => x.id === id);
+  if (!a) return;
+  window._fbSetStatus(a._docId, 'approved');
+  showToast('success', `✅ ${a.name}'s appointment approved!`);
+}
+function quickReject(id, e) {
+  if (e) e.stopPropagation();
+  const a = window.appointments.find(x => x.id === id);
+  if (!a) return;
+  window._fbSetStatus(a._docId, 'rejected');
+  showToast('error', `❌ ${a.name}'s appointment rejected.`);
+}
+
+// ── MODAL ──
+function openModal(id, e) {
+  if (e) e.stopPropagation();
+  currentModalId = id;
+  const a = window.appointments.find(x => x.id === id);
+  document.getElementById('modalName').textContent = a.name;
+  document.getElementById('modalSubtitle').textContent = `${a.service} · ${a.date} at ${a.time}`;
+  document.getElementById('modalDetails').innerHTML = [
+    ['Age', a.age], ['Gender', a.gender], ['Phone', a.phone], ['Email', a.email],
+    ['Status', `<span class="status-pill ${a.status}">${a.status}</span>`],
+    ['Reference', a.ref], ['Service', a.service], ['Notified', a.notified ? '✓ Yes' : 'Not yet']
+  ].map(([l, v]) => `<div class="detail-item"><label>${l}</label><span>${v}</span></div>`).join('');
+  document.getElementById('modalQA').innerHTML = Object.entries(a.qa).map(([q, ans]) =>
+    `<div class="qa-item"><div class="q">${q}</div><div class="a">${ans}</div></div>`
+  ).join('');
+  const isPending = a.status === 'pending';
+  document.getElementById('modalApproveBtn').style.display = isPending ? 'flex' : 'none';
+  document.getElementById('modalRejectBtn').style.display = isPending ? 'flex' : 'none';
+  document.getElementById('detailModal').classList.add('open');
+}
+function closeModal() { document.getElementById('detailModal').classList.remove('open'); }
+function approveFromModal() { quickApprove(currentModalId); closeModal(); }
+function rejectFromModal()  { quickReject(currentModalId);  closeModal(); }
+function notifyFromModal() { closeModal(); openNotifyPanel(currentModalId); }
+
+// ── NOTIFY PANEL ──
+function openNotifyPanel(id, e) {
+  if (e) e.stopPropagation();
+  currentNotifyId = id;
+  const a = id ? window.appointments.find(x => x.id === id) : null;
+  document.getElementById('notifyTarget').textContent = a ? `To: ${a.name}` : 'Broadcast to all patients';
+  if (a) {
+    document.getElementById('emailTo').value = a.email || '';
+    document.getElementById('waNumber').value = a.phone || '';
+    document.getElementById('smsNumber').value = a.phone || '';
+    loadTemplate('email', a.status === 'approved' ? 'approved' : a.status === 'rejected' ? 'rejected' : 'custom');
+    loadTemplate('wa', a.status === 'approved' ? 'approved' : 'custom');
+    loadTemplate('sms', a.status === 'approved' ? 'approved' : 'custom');
+  }
+  document.getElementById('notifyPanel').classList.add('open');
+  document.getElementById('panelBackdrop').classList.add('open');
+}
+function closeNotifyPanel() {
+  document.getElementById('notifyPanel').classList.remove('open');
+  document.getElementById('panelBackdrop').classList.remove('open');
+}
+function switchNotifTab(tab, btn) {
+  document.querySelectorAll('.notify-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.notify-channel').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+function getPatientName() {
+  if (!currentNotifyId) return 'Patient';
+  return window.appointments.find(x => x.id === currentNotifyId)?.name || 'Patient';
+}
+function getApptDate() {
+  if (!currentNotifyId) return 'your scheduled date';
+  const a = window.appointments.find(x => x.id === currentNotifyId);
+  return a ? `${a.date} at ${a.time}` : 'your scheduled date';
+}
+
+function loadTemplate(channel, type) {
+  const name = getPatientName(), dt = getApptDate();
+  const tpl = {
+    email: {
+      approved: { sub: 'Your appointment is Confirmed ✅ — WellPath Clinic', body: `Dear ${name},\n\nGreat news! Your Weight Loss Consultation appointment has been approved.\n\n📅 Date & Time: ${dt}\n👩‍⚕️ Provider: Dr. Meera Kapoor\n📍 WellPath Clinic\n\nPlease arrive 10 minutes early and bring any previous medical reports.\n\nSee you soon!\n\nWarm regards,\nWellPath Clinic Team` },
+      rejected: { sub: 'Appointment Update — WellPath Clinic', body: `Dear ${name},\n\nUnfortunately, we were unable to confirm your appointment request at this time.\n\nReason: The selected time slot is no longer available.\n\nPlease visit our portal to choose an alternative time: [portal link]\n\nWe apologize for the inconvenience.\n\nWarm regards,\nWellPath Clinic Team` },
+      reminder: { sub: 'Appointment Reminder — Tomorrow at WellPath', body: `Dear ${name},\n\nThis is a friendly reminder about your upcoming appointment:\n\n📅 ${dt}\n👩‍⚕️ Dr. Meera Kapoor\n\nPlease ensure you:\n• Arrive 10 minutes early\n• Bring previous reports if any\n• Avoid heavy meals 2 hrs before\n\nSee you tomorrow!\n\nWellPath Clinic Team` },
+      custom: { sub: 'Message from WellPath Clinic', body: '' }
+    },
+    wa: {
+      approved: `Hi ${name}! 🎉 Your Weight Loss Consultation with Dr. Meera Kapoor is confirmed for *${dt}*. Please arrive 10 mins early. — WellPath Clinic`,
+      reminder: `Hi ${name}! ⏰ Reminder: You have an appointment tomorrow at *${dt}* with Dr. Meera Kapoor. — WellPath Clinic`,
+      custom: ''
+    },
+    sms: {
+      approved: `WellPath: Hi ${name}, your appt is confirmed for ${dt} with Dr. Kapoor. Arrive 10 mins early.`,
+      reminder: `WellPath: Reminder - Your appt is tomorrow at ${dt}. Dr. Meera Kapoor. Reply STOP to unsubscribe.`,
+      custom: ''
+    }
+  };
+  if (channel === 'email') {
+    const t = tpl.email[type] || tpl.email.custom;
+    document.getElementById('emailSubject').value = t.sub || '';
+    document.getElementById('emailBody').value = t.body || '';
+  } else if (channel === 'wa') {
+    document.getElementById('waBody').value = tpl.wa[type] || '';
+  } else if (channel === 'sms') {
+    document.getElementById('smsBody').value = tpl.sms[type] || '';
+    const txt = document.getElementById('smsBody').value;
+    document.getElementById('smsCharCount').textContent = txt.length + ' / 160';
+  }
+}
+
+// ── SEND FUNCTIONS ──
+function sendEmail() {
+  const to = document.getElementById('emailTo').value.trim();
+  const subject = document.getElementById('emailSubject').value.trim();
+  const body = document.getElementById('emailBody').value.trim();
+  const svcId = document.getElementById('ejs_service').value.trim();
+  const tplId = document.getElementById('ejs_template').value.trim();
+  const pubKey = document.getElementById('ejs_key').value.trim();
+  if (!to || !body) { showToast('error', 'Please fill in the email address and message.'); return; }
+  if (!svcId || !tplId || !pubKey) {
+    // Simulate for demo
+    markNotified(); closeNotifyPanel();
+    showToast('info', `📧 Demo: Email would be sent to ${to}. Add your EmailJS keys to send for real.`);
+    return;
+  }
+  // Real EmailJS send:
+  // emailjs.init(pubKey);
+  // emailjs.send(svcId, tplId, { to_email: to, subject: subject, message: body })
+  //   .then(() => { markNotified(); closeNotifyPanel(); showToast('success', `✅ Email sent to ${to}`); })
+  //   .catch(err => showToast('error', 'Email failed: ' + err.text));
+  markNotified(); closeNotifyPanel();
+  showToast('success', `✅ Email sent to ${to}`);
+}
+
+function sendWhatsApp() {
+  const number = document.getElementById('waNumber').value.trim();
+  const msg = document.getElementById('waBody').value.trim();
+  if (!number || !msg) { showToast('error', 'Enter phone number and message.'); return; }
+  // In production: POST to your backend → Twilio API
+  // fetch('/api/whatsapp', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ to: 'whatsapp:'+number, body: msg }) })
+  markNotified(); closeNotifyPanel();
+  showToast('info', `💬 Demo: WhatsApp message queued for ${number}. Connect Twilio backend to send for real.`);
+}
+
+function openWhatsAppWeb() {
+  const number = document.getElementById('waNumber').value.trim().replace(/\D/g,'');
+  const msg = encodeURIComponent(document.getElementById('waBody').value.trim());
+  if (!number) { showToast('error', 'Enter a WhatsApp number first.'); return; }
+  window.open(`https://wa.me/${number}?text=${msg}`, '_blank');
+  markNotified();
+}
+
+function sendSMS() {
+  const number = document.getElementById('smsNumber').value.trim();
+  const msg = document.getElementById('smsBody').value.trim();
+  if (!number || !msg) { showToast('error', 'Enter phone number and message.'); return; }
+  markNotified(); closeNotifyPanel();
+  showToast('info', `📱 Demo: SMS queued for ${number}. Connect Twilio backend to send for real.`);
+}
+
+function markNotified() {
+  if (currentNotifyId) {
+    const a = window.appointments.find(x => x.id === currentNotifyId);
+    if (a) window._fbSetNotified(a._docId);
+  }
+}
+
+// ── EXPORT CSV ──
+function exportCSV() {
+  const filtered = getFiltered();
+  const headers = ['Name','Age','Gender','Phone','Email','Service','Date','Time','Status','Notified','Reference'];
+  const rows = filtered.map(a => [a.name, a.age, a.gender, a.phone, a.email, a.service, a.date, a.time, a.status, a.notified ? 'Yes' : 'No', a.ref].map(v => `"${v}"`).join(','));
+  const csv = [headers.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'appointments_export.csv'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('success', '📥 CSV exported successfully!');
+}
+
+// ── TOAST ──
+function showToast(type, msg) {
+  const t = document.getElementById('toast');
+  t.className = 'toast ' + type;
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+// Close modal on backdrop click
+document.getElementById('detailModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+</script>
+</body>
+</html>
