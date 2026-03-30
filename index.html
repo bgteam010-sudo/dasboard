@@ -1450,7 +1450,7 @@ onSnapshot(query(collection(db,'appointments'),orderBy('createdAt','desc')), sna
   window.DB = snap.docs.map((d,i)=>{
     const x=d.data();
     return {
-      _docId:x.ref||d.id, _id:d.id, id:i,
+      _docId: d.id, _id: d.id, id: i,
       name:   x.name   ||'—', age:x.age||'—', gender:x.gender||'—',
       phone:  x.phone  ||'—', email:x.email  ||'—',
       service:x.service||'Weight Loss Consultation',
