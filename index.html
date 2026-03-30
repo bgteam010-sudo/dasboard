@@ -3,763 +3,1439 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WellPath Admin — Appointment Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>WellPath Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --teal: #2a9d8f; --teal-light: #e8f5f3; --teal-dark: #1f7a6e; --teal-glow: rgba(42,157,143,0.18);
-  --orange: #e76f51; --orange-light: #fff4f0;
-  --navy: #0f1e35; --navy-mid: #1a2f4a;
-  --sidebar-bg: #0f1e35; --sidebar-border: rgba(255,255,255,0.07);
-  --card-bg: #ffffff;
-  --surface: #f5f8fa;
-  --gray-100: #eef2f5; --gray-200: #dde4ea; --gray-400: #9aaab8; --gray-600: #4a6070;
-  --green: #22c55e; --green-light: #f0fdf4;
-  --red: #ef4444; --red-light: #fff5f5;
-  --yellow: #f59e0b; --yellow-light: #fffbeb;
-  --blue: #3b82f6; --blue-light: #eff6ff;
-  --shadow: 0 2px 12px rgba(15,30,53,0.08); --shadow-md: 0 4px 24px rgba(15,30,53,0.12);
-  --radius: 14px; --radius-sm: 9px;
-  --sidebar-w: 240px;
+:root{
+  --teal:#2a9d8f;--teal2:#1f7a6e;--teal3:#e6f6f4;--tealg:rgba(42,157,143,.2);
+  --orange:#f4845f;--orange2:#fff1ec;
+  --navy:#0d1b2a;--navy2:#162032;--navy3:#1e2d40;
+  --surf:#f4f7f9;--white:#fff;
+  --g50:#f8fafc;--g100:#edf1f4;--g200:#dce3e9;--g300:#bcc8d2;--g400:#8fa3b1;--g600:#4d6475;
+  --green:#16a34a;--greenl:#f0fdf4;--green2:#bbf7d0;
+  --red:#dc2626;--redl:#fef2f2;--red2:#fecaca;
+  --amber:#d97706;--amberl:#fffbeb;--amber2:#fde68a;
+  --blue:#2563eb;--bluel:#eff6ff;--blue2:#bfdbfe;
+  --purple:#7c3aed;--purplel:#f5f3ff;
+  --sh:0 1px 3px rgba(13,27,42,.06),0 4px 16px rgba(13,27,42,.08);
+  --sh2:0 2px 8px rgba(13,27,42,.08),0 8px 32px rgba(13,27,42,.12);
+  --r:14px;--rs:9px;--sw:252px;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'DM Sans', sans-serif; background: var(--surface); color: var(--navy); display: flex; min-height: 100vh; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;background:var(--surf);color:var(--navy);display:flex;min-height:100vh;-webkit-font-smoothing:antialiased}
 
 /* ── SIDEBAR ── */
-.sidebar {
-  width: var(--sidebar-w); background: var(--sidebar-bg); color: white;
-  display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0;
-  z-index: 100; padding: 0;
-}
-.sidebar-logo {
-  padding: 24px 22px 20px;
-  border-bottom: 1px solid var(--sidebar-border);
-  display: flex; align-items: center; gap: 12px;
-}
-.logo-sq {
-  width: 36px; height: 36px; background: linear-gradient(135deg, var(--teal), var(--teal-dark));
-  border-radius: 9px; display: flex; align-items: center; justify-content: center;
-}
-.sidebar-logo h1 { font-family: 'DM Serif Display', serif; font-size: 17px; line-height: 1.2; }
-.sidebar-logo span { font-size: 11px; color: rgba(255,255,255,0.45); display: block; margin-top: 1px; }
-
-.sidebar-nav { padding: 18px 12px; flex: 1; }
-.nav-section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.3); padding: 6px 10px 8px; }
-.nav-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 12px; border-radius: var(--radius-sm); margin-bottom: 2px;
-  font-size: 13.5px; font-weight: 500; color: rgba(255,255,255,0.6);
-  cursor: pointer; transition: all 0.18s; text-decoration: none;
-}
-.nav-item:hover { background: rgba(255,255,255,0.07); color: white; }
-.nav-item.active { background: rgba(42,157,143,0.22); color: white; }
-.nav-item svg { flex-shrink: 0; opacity: 0.7; }
-.nav-item.active svg { opacity: 1; }
-.nav-badge {
-  margin-left: auto; background: var(--orange); color: white;
-  font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 20px; min-width: 22px; text-align: center;
-}
-.nav-badge.green { background: var(--green); }
-
-.sidebar-footer {
-  padding: 16px 14px; border-top: 1px solid var(--sidebar-border);
-  font-size: 12px; color: rgba(255,255,255,0.35);
-}
-.admin-pill {
-  display: flex; align-items: center; gap: 10px; padding: 10px 10px;
-  background: rgba(255,255,255,0.05); border-radius: var(--radius-sm);
-}
-.admin-avatar {
-  width: 32px; height: 32px; background: linear-gradient(135deg, var(--teal), var(--teal-dark));
-  border-radius: 50%; display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 700; color: white; flex-shrink: 0;
-}
-.admin-pill-info strong { display: block; font-size: 13px; color: white; font-weight: 600; }
-.admin-pill-info span { font-size: 11px; color: rgba(255,255,255,0.4); }
+.sb{width:var(--sw);background:var(--navy);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;border-right:1px solid rgba(255,255,255,.04)}
+.sb-logo{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:11px}
+.sb-mark{width:36px;height:36px;background:linear-gradient(135deg,var(--teal),var(--teal2));border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px var(--tealg);flex-shrink:0}
+.sb-logo h1{font-family:'Instrument Serif',serif;font-size:17px;color:#fff;letter-spacing:-.3px}
+.sb-logo span{font-size:10.5px;color:rgba(255,255,255,.35);display:block;margin-top:1px}
+.sb-nav{padding:12px 10px;flex:1;overflow-y:auto}
+.sb-sec{font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.22);padding:10px 10px 5px;margin-top:4px}
+.sb-link{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:var(--rs);margin-bottom:2px;font-size:13px;font-weight:500;color:rgba(255,255,255,.5);cursor:pointer;transition:all .18s;text-decoration:none;border:1px solid transparent}
+.sb-link:hover{background:rgba(255,255,255,.06);color:#fff}
+.sb-link.active{background:rgba(42,157,143,.18);color:#fff;border-color:rgba(42,157,143,.3)}
+.sb-link svg{flex-shrink:0;opacity:.65}
+.sb-link.active svg{opacity:1;color:var(--teal)}
+.sb-badge{margin-left:auto;background:var(--orange);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;min-width:18px;text-align:center}
+.sb-badge.g{background:var(--green)}
+.sb-foot{padding:12px 10px;border-top:1px solid rgba(255,255,255,.06)}
+.sb-prof{display:flex;align-items:center;gap:9px;padding:9px 10px;background:rgba(255,255,255,.05);border-radius:var(--rs);border:1px solid rgba(255,255,255,.06)}
+.sb-av{width:32px;height:32px;background:linear-gradient(135deg,var(--teal),var(--teal2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.sb-prof strong{display:block;font-size:12.5px;color:#fff;font-weight:600}
+.sb-prof span{font-size:10.5px;color:rgba(255,255,255,.35)}
 
 /* ── MAIN ── */
-.main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:#fff;border-bottom:1px solid var(--g100);padding:13px 26px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 1px 0 var(--g100)}
+.tb-l h2{font-size:18px;font-weight:700;letter-spacing:-.3px}
+.tb-l p{font-size:12px;color:var(--g400);margin-top:1px}
+.tb-r{display:flex;align-items:center;gap:9px}
+.live-pill{display:flex;align-items:center;gap:6px;padding:5px 11px;border-radius:20px;background:var(--g100);font-size:11.5px;font-weight:600;color:var(--g400)}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--g300);flex-shrink:0;transition:all .3s}
+.live-dot.on{background:var(--green);box-shadow:0 0 0 3px rgba(22,163,74,.2)}
+.live-dot.err{background:var(--red)}
+.btn{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--rs);font-size:12.5px;font-weight:600;cursor:pointer;border:none;font-family:'Outfit',sans-serif;transition:all .18s}
+.btn.out{background:#fff;border:1.5px solid var(--g200);color:var(--navy)}
+.btn.out:hover{border-color:var(--teal);color:var(--teal)}
+.btn.pri{background:var(--teal);color:#fff}
+.btn.pri:hover{background:var(--teal2);box-shadow:0 4px 14px var(--tealg)}
+.btn.danger{background:var(--redl);color:#b91c1c;border:1.5px solid var(--red2)}
+.btn.success{background:var(--greenl);color:#15803d;border:1.5px solid var(--green2)}
+.icon-btn{width:36px;height:36px;border-radius:var(--rs);background:var(--g100);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;position:relative}
+.icon-btn:hover{background:var(--g200)}
+.notif-dot{width:8px;height:8px;background:var(--orange);border-radius:50%;position:absolute;top:7px;right:7px;border:2px solid #fff;display:none}
 
-.topbar {
-  background: white; border-bottom: 1px solid var(--gray-100);
-  padding: 16px 32px; display: flex; align-items: center; justify-content: space-between;
-  position: sticky; top: 0; z-index: 50; box-shadow: var(--shadow);
-}
-.topbar-left h2 { font-size: 20px; font-weight: 700; }
-.topbar-left p { font-size: 13px; color: var(--gray-400); margin-top: 1px; }
-.topbar-right { display: flex; align-items: center; gap: 12px; }
-.topbar-btn {
-  display: flex; align-items: center; gap: 7px; padding: 9px 16px;
-  border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer;
-  border: none; font-family: 'DM Sans', sans-serif; transition: all 0.18s;
-}
-.topbar-btn.outline { background: white; border: 1.5px solid var(--gray-200); color: var(--navy); }
-.topbar-btn.outline:hover { border-color: var(--teal); color: var(--teal); }
-.topbar-btn.primary { background: var(--teal); color: white; }
-.topbar-btn.primary:hover { background: var(--teal-dark); box-shadow: 0 4px 14px var(--teal-glow); }
-.notif-btn {
-  width: 38px; height: 38px; border-radius: var(--radius-sm); background: var(--gray-100);
-  border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
-  position: relative; transition: background 0.15s;
-}
-.notif-btn:hover { background: var(--gray-200); }
-.notif-dot {
-  width: 8px; height: 8px; background: var(--orange); border-radius: 50%;
-  position: absolute; top: 8px; right: 8px; border: 2px solid white;
-}
+.content{padding:22px 26px;flex:1}
+.page{display:none}.page.active{display:block}
 
-/* ── CONTENT ── */
-.content { padding: 28px 32px; flex: 1; }
+/* ── CARDS & LAYOUT ── */
+.card{background:#fff;border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--g100)}
+.card-head{padding:15px 20px;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between}
+.card-head h3{font-size:14.5px;font-weight:700}
+.card-head span{font-size:12px;color:var(--g400)}
 
-/* Stats row */
-.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
-.stat-card {
-  background: white; border-radius: var(--radius); padding: 20px 22px;
-  box-shadow: var(--shadow); border: 1px solid var(--gray-100);
-  display: flex; align-items: center; gap: 16px;
-  animation: fadeUp 0.4s ease both;
-}
-.stat-card:nth-child(1) { animation-delay: 0.05s; }
-.stat-card:nth-child(2) { animation-delay: 0.1s; }
-.stat-card:nth-child(3) { animation-delay: 0.15s; }
-.stat-card:nth-child(4) { animation-delay: 0.2s; }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-.stat-icon {
-  width: 46px; height: 46px; border-radius: 12px;
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-}
-.stat-num { font-size: 26px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
-.stat-label { font-size: 12px; color: var(--gray-400); font-weight: 500; }
-.stat-change { font-size: 12px; margin-top: 4px; font-weight: 500; }
-.stat-change.up { color: var(--green); }
-.stat-change.pending { color: var(--orange); }
+/* ── STATS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat-card{background:#fff;border-radius:var(--r);padding:18px 20px;box-shadow:var(--sh);border:1px solid var(--g100);display:flex;align-items:center;gap:14px;animation:fadeUp .4s ease both}
+.stat-card:nth-child(1){animation-delay:.04s}.stat-card:nth-child(2){animation-delay:.08s}.stat-card:nth-child(3){animation-delay:.12s}.stat-card:nth-child(4){animation-delay:.16s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.stat-ico{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.stat-num{font-size:28px;font-weight:700;line-height:1;letter-spacing:-1px;margin-bottom:2px}
+.stat-lbl{font-size:11.5px;color:var(--g400);font-weight:500}
+.stat-sub{font-size:11px;margin-top:3px;font-weight:500}
+.stat-sub.up{color:var(--green)}.stat-sub.warn{color:var(--amber)}
 
-/* Filter bar */
-.filter-bar {
-  background: white; border-radius: var(--radius); padding: 16px 20px;
-  box-shadow: var(--shadow); border: 1px solid var(--gray-100);
-  display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
-}
-.search-wrap { position: relative; flex: 1; min-width: 200px; }
-.search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); }
-.search-input {
-  width: 100%; padding: 9px 12px 9px 38px; border: 1.5px solid var(--gray-200);
-  border-radius: var(--radius-sm); font-size: 13.5px; font-family: 'DM Sans', sans-serif;
-  outline: none; transition: border-color 0.2s; color: var(--navy);
-}
-.search-input:focus { border-color: var(--teal); }
-.filter-select {
-  padding: 9px 32px 9px 12px; border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm);
-  font-size: 13px; font-family: 'DM Sans', sans-serif; outline: none; color: var(--navy);
-  cursor: pointer; appearance: none;
-  background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%239aaab8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center;
-  transition: border-color 0.2s;
-}
-.filter-select:focus { border-color: var(--teal); }
-.filter-tabs { display: flex; gap: 4px; background: var(--gray-100); border-radius: var(--radius-sm); padding: 4px; }
-.filter-tab {
-  padding: 7px 14px; border-radius: 7px; font-size: 13px; font-weight: 500;
-  cursor: pointer; transition: all 0.15s; color: var(--gray-400); border: none; background: none;
-  font-family: 'DM Sans', sans-serif;
-}
-.filter-tab.active { background: white; color: var(--navy); box-shadow: 0 1px 6px rgba(15,30,53,0.1); }
+/* ── CHARTS ── */
+.charts-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:22px}
+.chart-card{background:#fff;border-radius:var(--r);padding:18px 20px;box-shadow:var(--sh);border:1px solid var(--g100)}
+.chart-card h3{font-size:13.5px;font-weight:700;margin-bottom:2px}
+.chart-card p{font-size:11.5px;color:var(--g400);margin-bottom:14px}
+.donut-wrap{display:flex;align-items:center;gap:18px}
+.donut-legend{display:flex;flex-direction:column;gap:7px;flex:1}
+.donut-item{display:flex;align-items:center;gap:7px;font-size:12px}
+.donut-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.donut-val{font-weight:700;margin-left:auto}
+.mini-bars{display:flex;align-items:flex-end;gap:5px;height:90px}
+.mbar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.mbar{width:100%;border-radius:4px 4px 0 0;min-height:4px;transition:height .5s ease}
+.mbar-lbl{font-size:9px;color:var(--g400);font-weight:500;text-align:center}
+.mbar-val{font-size:9.5px;font-weight:700;color:var(--g600)}
+/* Timeline */
+.timeline{display:flex;flex-direction:column;gap:0}
+.tl-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--g100)}
+.tl-item:last-child{border-bottom:none}
+.tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.tl-time{font-size:11px;color:var(--g400);white-space:nowrap;min-width:60px}
+.tl-txt{font-size:12.5px;color:var(--navy);flex:1}
+.tl-txt strong{font-weight:600}
 
-/* Table */
-.table-card {
-  background: white; border-radius: var(--radius); box-shadow: var(--shadow);
-  border: 1px solid var(--gray-100); overflow: hidden;
-  animation: fadeUp 0.4s ease 0.25s both;
-}
-.table-header {
-  padding: 18px 22px 14px; border-bottom: 1px solid var(--gray-100);
-  display: flex; align-items: center; justify-content: space-between;
-}
-.table-header h3 { font-size: 15px; font-weight: 700; }
-.table-header span { font-size: 13px; color: var(--gray-400); }
-table { width: 100%; border-collapse: collapse; }
-thead tr { border-bottom: 1.5px solid var(--gray-100); }
-th { padding: 12px 16px; text-align: left; font-size: 11.5px; font-weight: 600; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; }
-tbody tr { border-bottom: 1px solid var(--gray-100); transition: background 0.12s; cursor: pointer; }
-tbody tr:last-child { border-bottom: none; }
-tbody tr:hover { background: #fafcfd; }
-td { padding: 14px 16px; font-size: 13.5px; vertical-align: middle; }
+/* ── FILTER BAR ── */
+.filter-bar{background:#fff;border-radius:var(--r);padding:13px 16px;box-shadow:var(--sh);border:1px solid var(--g100);display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.srch-wrap{position:relative;flex:1;min-width:200px}
+.srch-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--g400)}
+.srch{width:100%;padding:8px 12px 8px 34px;border:1.5px solid var(--g200);border-radius:var(--rs);font-size:13px;font-family:'Outfit',sans-serif;outline:none;transition:border-color .2s;color:var(--navy)}
+.srch:focus{border-color:var(--teal)}
+.fsel{padding:8px 28px 8px 11px;border:1.5px solid var(--g200);border-radius:var(--rs);font-size:12.5px;font-family:'Outfit',sans-serif;outline:none;color:var(--navy);cursor:pointer;appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238fa3b1' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 9px center;transition:border-color .2s}
+.fsel:focus{border-color:var(--teal)}
+.ftabs{display:flex;gap:2px;background:var(--g100);border-radius:var(--rs);padding:3px}
+.ftab{padding:6px 12px;border-radius:7px;font-size:12.5px;font-weight:500;cursor:pointer;transition:all .15s;color:var(--g400);border:none;background:none;font-family:'Outfit',sans-serif}
+.ftab.active{background:#fff;color:var(--navy);box-shadow:0 1px 4px rgba(13,27,42,.1)}
+.date-range{display:flex;align-items:center;gap:6px}
+.date-inp{padding:7px 10px;border:1.5px solid var(--g200);border-radius:var(--rs);font-size:12px;font-family:'Outfit',sans-serif;outline:none;color:var(--navy)}
+.date-inp:focus{border-color:var(--teal)}
 
-.patient-cell { display: flex; align-items: center; gap: 11px; }
-.patient-av {
-  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 700; color: white;
-}
-.patient-av.a { background: linear-gradient(135deg, #667eea, #764ba2); }
-.patient-av.b { background: linear-gradient(135deg, var(--teal), var(--teal-dark)); }
-.patient-av.c { background: linear-gradient(135deg, var(--orange), #f4a261); }
-.patient-av.d { background: linear-gradient(135deg, #4facfe, #00f2fe); }
-.patient-av.e { background: linear-gradient(135deg, #43e97b, #38f9d7); }
-.patient-name { font-weight: 600; font-size: 14px; color: var(--navy); }
-.patient-meta { font-size: 12px; color: var(--gray-400); margin-top: 1px; }
+/* ── TABLE ── */
+.tbl-card{background:#fff;border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--g100);overflow:hidden;animation:fadeUp .4s ease .2s both}
+table{width:100%;border-collapse:collapse}
+thead tr{border-bottom:1.5px solid var(--g100)}
+th{padding:10px 14px;text-align:left;font-size:10.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.07em;white-space:nowrap;cursor:pointer;user-select:none}
+th:hover{color:var(--teal)}
+th.sorted{color:var(--teal)}
+tbody tr{border-bottom:1px solid var(--g100);transition:background .1s;cursor:pointer}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:#fafcfd}
+td{padding:12px 14px;font-size:13px;vertical-align:middle}
+.pat-cell{display:flex;align-items:center;gap:10px}
+.av{width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
+.av-a{background:linear-gradient(135deg,#667eea,#764ba2)}
+.av-b{background:linear-gradient(135deg,#2a9d8f,#1f7a6e)}
+.av-c{background:linear-gradient(135deg,#f4845f,#f4a261)}
+.av-d{background:linear-gradient(135deg,#4facfe,#00f2fe)}
+.av-e{background:linear-gradient(135deg,#43e97b,#38f9d7)}
+.pat-name{font-weight:600;font-size:13px;color:var(--navy)}
+.pat-meta{font-size:11px;color:var(--g400);margin-top:1px}
+.pill{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.pill.pending{background:var(--amberl);color:#92400e}
+.pill.approved{background:var(--greenl);color:#15803d}
+.pill.rejected{background:var(--redl);color:#b91c1c}
+.pill.completed{background:var(--bluel);color:#1d4ed8}
+.pill-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.pill.pending .pill-dot{background:var(--amber)}
+.pill.approved .pill-dot{background:var(--green)}
+.pill.rejected .pill-dot{background:var(--red)}
+.pill.completed .pill-dot{background:var(--blue)}
+.act-cell{display:flex;gap:4px;flex-wrap:wrap}
+.abtn{padding:5px 10px;border-radius:6px;font-size:11.5px;font-weight:600;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .15s;display:flex;align-items:center;gap:3px;white-space:nowrap}
+.abtn.approve{background:var(--greenl);color:#15803d}.abtn.approve:hover{background:var(--green2)}
+.abtn.reject{background:var(--redl);color:#b91c1c}.abtn.reject:hover{background:var(--red2)}
+.abtn.notify{background:var(--teal3);color:var(--teal2)}.abtn.notify:hover{background:#c8ecea}
+.abtn.view{background:var(--g100);color:var(--g600)}.abtn.view:hover{background:var(--g200)}
+.abtn.complete{background:var(--bluel);color:#1d4ed8}.abtn.complete:hover{background:var(--blue2)}
+.abtn.delete{background:var(--redl);color:#b91c1c}.abtn.delete:hover{background:var(--red2)}
+.pagination{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-top:1px solid var(--g100)}
+.pag-info{font-size:12px;color:var(--g400)}
+.pag-btns{display:flex;gap:3px}
+.pag-btn{width:28px;height:28px;border-radius:6px;border:1.5px solid var(--g200);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:var(--navy);transition:all .15s;font-family:'Outfit',sans-serif}
+.pag-btn:hover{border-color:var(--teal);color:var(--teal)}
+.pag-btn.active{background:var(--teal);color:#fff;border-color:var(--teal)}
 
-.status-pill {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 4px 11px; border-radius: 20px; font-size: 12px; font-weight: 600; white-space: nowrap;
-}
-.status-pill.pending { background: var(--yellow-light); color: #b45309; }
-.status-pill.approved { background: var(--green-light); color: #15803d; }
-.status-pill.rejected { background: var(--red-light); color: #b91c1c; }
-.status-pill.completed { background: var(--blue-light); color: #1d4ed8; }
-.status-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-.status-pill.pending .status-dot { background: #f59e0b; }
-.status-pill.approved .status-dot { background: var(--green); }
-.status-pill.rejected .status-dot { background: var(--red); }
-.status-pill.completed .status-dot { background: var(--blue); }
+/* ── PATIENTS PAGE ── */
+.pat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+.pat-card{background:#fff;border-radius:var(--r);padding:18px;box-shadow:var(--sh);border:1px solid var(--g100);cursor:pointer;transition:all .18s}
+.pat-card:hover{box-shadow:var(--sh2);transform:translateY(-2px)}
+.pat-card-top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.pat-card-av{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0}
+.pat-card h4{font-size:14px;font-weight:700;margin-bottom:2px}
+.pat-card .pat-card-sub{font-size:11.5px;color:var(--g400)}
+.pat-card-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;border-top:1px solid var(--g100);padding-top:12px}
+.pcs{text-align:center}
+.pcs-num{font-size:16px;font-weight:700;color:var(--navy)}
+.pcs-lbl{font-size:10px;color:var(--g400);font-weight:500;margin-top:1px}
 
-.action-btns-cell { display: flex; gap: 6px; }
-.act-btn {
-  padding: 6px 12px; border-radius: 7px; font-size: 12px; font-weight: 600;
-  border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s;
-  display: flex; align-items: center; gap: 5px;
-}
-.act-btn.approve { background: var(--green-light); color: #15803d; }
-.act-btn.approve:hover { background: #dcfce7; box-shadow: 0 2px 8px rgba(34,197,94,0.2); }
-.act-btn.reject { background: var(--red-light); color: #b91c1c; }
-.act-btn.reject:hover { background: #fee2e2; }
-.act-btn.notify { background: var(--teal-light); color: var(--teal-dark); }
-.act-btn.notify:hover { background: #d0eeea; }
-.act-btn.view { background: var(--gray-100); color: var(--gray-600); }
-.act-btn.view:hover { background: var(--gray-200); }
+/* ── NOTIFICATIONS PAGE ── */
+.notif-list{display:flex;flex-direction:column;gap:10px}
+.notif-item{background:#fff;border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh);border:1px solid var(--g100);display:flex;align-items:flex-start;gap:14px;transition:all .18s}
+.notif-item:hover{box-shadow:var(--sh2)}
+.notif-item.unread{border-left:3px solid var(--teal)}
+.notif-ico{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.notif-body{flex:1}
+.notif-body h4{font-size:13.5px;font-weight:600;margin-bottom:3px}
+.notif-body p{font-size:12.5px;color:var(--g400);line-height:1.5}
+.notif-time{font-size:11px;color:var(--g400);white-space:nowrap;margin-top:2px}
+.notif-actions{display:flex;gap:6px;margin-top:8px}
+
+/* ── SETTINGS PAGE ── */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.settings-card{background:#fff;border-radius:var(--r);padding:20px;box-shadow:var(--sh);border:1px solid var(--g100)}
+.settings-card h3{font-size:14px;font-weight:700;margin-bottom:4px}
+.settings-card p{font-size:12.5px;color:var(--g400);margin-bottom:16px}
+.form-row{margin-bottom:14px}
+.form-lbl{font-size:11.5px;font-weight:700;color:var(--g600);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.05em}
+.form-inp{width:100%;border:1.5px solid var(--g200);border-radius:var(--rs);padding:9px 12px;font-size:13.5px;font-family:'Outfit',sans-serif;outline:none;transition:border-color .2s;color:var(--navy)}
+.form-inp:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--tealg)}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--g100)}
+.toggle-row:last-child{border-bottom:none}
+.toggle-row span{font-size:13px;font-weight:500}
+.toggle-row small{font-size:11.5px;color:var(--g400);display:block}
+.toggle{width:40px;height:22px;border-radius:20px;border:none;cursor:pointer;transition:background .2s;position:relative;flex-shrink:0}
+.toggle.on{background:var(--teal)}.toggle.off{background:var(--g300)}
+.toggle::after{content:'';width:16px;height:16px;background:#fff;border-radius:50%;position:absolute;top:3px;transition:left .2s}
+.toggle.on::after{left:21px}.toggle.off::after{left:3px}
 
 /* ── MODAL ── */
-.modal-overlay {
-  position: fixed; inset: 0; background: rgba(15,30,53,0.55); backdrop-filter: blur(4px);
-  z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px;
-}
-.modal-overlay.open { display: flex; }
-.modal {
-  background: white; border-radius: 20px; width: 100%; max-width: 560px;
-  box-shadow: 0 24px 80px rgba(15,30,53,0.25); animation: modalIn 0.28s cubic-bezier(0.34,1.4,0.64,1);
-  overflow: hidden; max-height: 90vh; display: flex; flex-direction: column;
-}
-@keyframes modalIn { from { transform: scale(0.9) translateY(20px); opacity: 0; } to { transform: none; opacity: 1; } }
-.modal-head {
-  padding: 22px 24px 18px; border-bottom: 1px solid var(--gray-100);
-  display: flex; align-items: flex-start; justify-content: space-between;
-}
-.modal-head h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
-.modal-head p { font-size: 13px; color: var(--gray-400); }
-.modal-close {
-  width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--gray-100);
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; transition: background 0.15s; margin-top: -2px;
-}
-.modal-close:hover { background: var(--gray-200); }
-.modal-body { padding: 22px 24px; overflow-y: auto; flex: 1; }
-.modal-section { margin-bottom: 22px; }
-.modal-section:last-child { margin-bottom: 0; }
-.modal-section-title {
-  font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--gray-400); margin-bottom: 12px;
-}
-.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.detail-item label { font-size: 12px; color: var(--gray-400); display: block; margin-bottom: 3px; }
-.detail-item span { font-size: 14px; font-weight: 600; color: var(--navy); }
-.qa-item { background: var(--surface); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 8px; }
-.qa-item .q { font-size: 12px; color: var(--gray-400); margin-bottom: 4px; }
-.qa-item .a { font-size: 14px; font-weight: 500; color: var(--navy); }
-.modal-footer {
-  padding: 16px 24px; border-top: 1px solid var(--gray-100);
-  display: flex; gap: 10px; background: white;
-}
-.modal-btn {
-  flex: 1; padding: 11px; border-radius: var(--radius-sm); font-size: 13.5px; font-weight: 600;
-  border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.18s;
-  display: flex; align-items: center; justify-content: center; gap: 7px;
-}
-.modal-btn.approve { background: var(--green); color: white; }
-.modal-btn.approve:hover { background: #16a34a; box-shadow: 0 4px 14px rgba(34,197,94,0.3); }
-.modal-btn.reject { background: var(--red-light); color: #b91c1c; border: 1.5px solid #fca5a5; }
-.modal-btn.reject:hover { background: #fee2e2; }
-.modal-btn.notify { background: var(--teal); color: white; }
-.modal-btn.notify:hover { background: var(--teal-dark); }
+.overlay{position:fixed;inset:0;background:rgba(13,27,42,.5);backdrop-filter:blur(6px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:20px;width:100%;max-width:600px;box-shadow:0 24px 80px rgba(13,27,42,.25);animation:mIn .28s cubic-bezier(.34,1.4,.64,1);overflow:hidden;max-height:92vh;display:flex;flex-direction:column}
+@keyframes mIn{from{transform:scale(.9) translateY(20px);opacity:0}to{transform:none;opacity:1}}
+.m-head{padding:18px 22px 14px;border-bottom:1px solid var(--g100);display:flex;align-items:flex-start;justify-content:space-between;background:linear-gradient(135deg,var(--navy),var(--navy3))}
+.m-head h3{font-size:17px;font-weight:700;color:#fff;margin-bottom:2px}
+.m-head p{font-size:12.5px;color:rgba(255,255,255,.45)}
+.m-head-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0;border:2px solid rgba(255,255,255,.2)}
+.m-close{width:28px;height:28px;border-radius:50%;border:none;background:rgba(255,255,255,.1);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;transition:background .15s}
+.m-close:hover{background:rgba(255,255,255,.2)}
+.m-body{padding:18px 22px;overflow-y:auto;flex:1}
+.m-sec{margin-bottom:18px}
+.m-sec:last-child{margin-bottom:0}
+.m-sec-title{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--g400);margin-bottom:8px}
+.det-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.di label{font-size:11px;color:var(--g400);display:block;margin-bottom:2px}
+.di span{font-size:13.5px;font-weight:600;color:var(--navy)}
+.qa-item{background:var(--surf);border-radius:var(--rs);padding:10px 12px;margin-bottom:6px;border-left:3px solid var(--teal)}
+.qa-item .q{font-size:10.5px;color:var(--g400);margin-bottom:2px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.qa-item .a{font-size:13px;font-weight:500;color:var(--navy)}
+.m-foot{padding:13px 22px;border-top:1px solid var(--g100);display:flex;gap:8px;background:#fff}
+.mbtn{flex:1;padding:10px;border-radius:var(--rs);font-size:12.5px;font-weight:600;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:5px}
+.mbtn.approve{background:var(--green);color:#fff}.mbtn.approve:hover{background:#15803d;box-shadow:0 4px 14px rgba(22,163,74,.3)}
+.mbtn.reject{background:var(--redl);color:#b91c1c;border:1.5px solid var(--red2)}.mbtn.reject:hover{background:var(--red2)}
+.mbtn.notify{background:var(--teal);color:#fff}.mbtn.notify:hover{background:var(--teal2)}
+.mbtn.complete{background:var(--bluel);color:#1d4ed8;border:1.5px solid var(--blue2)}.mbtn.complete:hover{background:var(--blue2)}
+.mbtn.grey{background:var(--g100);color:var(--g600)}.mbtn.grey:hover{background:var(--g200)}
+
+/* ── CONFIRM ── */
+.conf-overlay{position:fixed;inset:0;background:rgba(13,27,42,.5);backdrop-filter:blur(4px);z-index:400;display:none;align-items:center;justify-content:center}
+.conf-overlay.open{display:flex}
+.conf-box{background:#fff;border-radius:18px;padding:26px;width:360px;box-shadow:0 24px 80px rgba(13,27,42,.25);animation:mIn .25s cubic-bezier(.34,1.4,.64,1);text-align:center}
+.conf-ico{width:50px;height:50px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center}
+.conf-box h3{font-size:16px;font-weight:700;margin-bottom:6px}
+.conf-box p{font-size:13px;color:var(--g400);margin-bottom:20px;line-height:1.5}
+.conf-btns{display:flex;gap:8px}
+.cbtn{flex:1;padding:10px;border-radius:var(--rs);font-size:13.5px;font-weight:600;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .18s}
+.cbtn.cancel{background:var(--g100);color:var(--navy)}.cbtn.cancel:hover{background:var(--g200)}
+.cbtn.danger{background:var(--red);color:#fff}.cbtn.danger:hover{background:#b91c1c}
+.cbtn.success{background:var(--green);color:#fff}.cbtn.success:hover{background:#15803d}
 
 /* ── NOTIFY PANEL ── */
-.notify-panel {
-  position: fixed; top: 0; right: 0; bottom: 0; width: 400px;
-  background: white; box-shadow: -8px 0 40px rgba(15,30,53,0.14);
-  z-index: 300; transform: translateX(100%); transition: transform 0.3s ease;
-  display: flex; flex-direction: column;
-}
-.notify-panel.open { transform: translateX(0); }
-.notify-panel-head {
-  padding: 22px 24px; border-bottom: 1px solid var(--gray-100);
-  display: flex; align-items: center; justify-content: space-between;
-}
-.notify-panel-head h3 { font-size: 17px; font-weight: 700; }
-.panel-close {
-  width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--gray-100);
-  cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s;
-}
-.panel-close:hover { background: var(--gray-200); }
-.notify-body { padding: 22px 24px; flex: 1; overflow-y: auto; }
+.np-back{position:fixed;inset:0;z-index:250;display:none}
+.np-back.open{display:block}
+.np{position:fixed;top:0;right:0;bottom:0;width:420px;background:#fff;box-shadow:-8px 0 40px rgba(13,27,42,.15);z-index:300;transform:translateX(100%);transition:transform .3s ease;display:flex;flex-direction:column}
+.np.open{transform:translateX(0)}
+.np-head{padding:18px 20px;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between;background:var(--navy)}
+.np-head h3{font-size:15px;font-weight:700;color:#fff}
+.np-head p{font-size:11.5px;color:rgba(255,255,255,.4);margin-top:2px}
+.np-cls{width:28px;height:28px;border-radius:50%;border:none;background:rgba(255,255,255,.1);cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;transition:background .15s}
+.np-cls:hover{background:rgba(255,255,255,.2)}
+.np-body{padding:18px 20px;flex:1;overflow-y:auto}
+.np-tabs{display:flex;gap:3px;background:var(--g100);border-radius:var(--rs);padding:3px;margin-bottom:16px}
+.np-tab{flex:1;padding:7px;border-radius:7px;text-align:center;font-size:12.5px;font-weight:500;cursor:pointer;transition:all .15s;color:var(--g400);border:none;background:none;font-family:'Outfit',sans-serif}
+.np-tab.active{background:#fff;color:var(--navy);box-shadow:0 1px 4px rgba(13,27,42,.1)}
+.np-ch{display:none}.np-ch.active{display:block}
+.ch-badge{display:flex;align-items:center;gap:7px;padding:9px 13px;border-radius:var(--rs);font-size:12.5px;font-weight:600;margin-bottom:12px}
+.ch-badge.em{background:#eff6ff;color:#1d4ed8}.ch-badge.wa{background:#f0fdf4;color:#15803d}.ch-badge.sm{background:var(--orange2);color:#9a3412}
+.flbl{font-size:11px;font-weight:700;color:var(--g600);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.05em}
+.finp{width:100%;border:1.5px solid var(--g200);border-radius:var(--rs);padding:9px 12px;font-size:13.5px;font-family:'Outfit',sans-serif;outline:none;transition:border-color .2s;color:var(--navy);margin-bottom:11px}
+.finp:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--tealg)}
+.fta{width:100%;border:1.5px solid var(--g200);border-radius:var(--rs);padding:9px 12px;font-size:13.5px;font-family:'Outfit',sans-serif;outline:none;resize:vertical;min-height:100px;color:var(--navy);transition:border-color .2s;margin-bottom:11px}
+.fta:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--tealg)}
+.tpl-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.tpl-chip{padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:600;background:var(--g100);color:var(--g600);border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .15s}
+.tpl-chip:hover{background:var(--teal3);color:var(--teal2)}
+.send-btn{width:100%;padding:11px;background:var(--teal);color:#fff;border:none;border-radius:var(--rs);font-size:13.5px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px}
+.send-btn:hover{background:var(--teal2);box-shadow:0 4px 18px var(--tealg)}
+.setup-note{background:var(--amberl);border:1.5px solid var(--amber2);border-radius:var(--rs);padding:11px 13px;margin-bottom:12px}
+.setup-note h5{font-size:12px;font-weight:700;color:#92400e;margin-bottom:2px}
+.setup-note p{font-size:11.5px;color:#78350f;line-height:1.5}
+.setup-note code{background:#fef3c7;padding:1px 4px;border-radius:3px;font-family:monospace}
 
-.notify-tabs { display: flex; gap: 4px; background: var(--gray-100); border-radius: var(--radius-sm); padding: 4px; margin-bottom: 20px; }
-.notify-tab {
-  flex: 1; padding: 8px; border-radius: 7px; text-align: center; font-size: 13px; font-weight: 500;
-  cursor: pointer; transition: all 0.15s; color: var(--gray-400); border: none; background: none; font-family: 'DM Sans', sans-serif;
-}
-.notify-tab.active { background: white; color: var(--navy); box-shadow: 0 1px 6px rgba(15,30,53,0.1); }
+/* ── TOAST ── */
+.toast{position:fixed;bottom:22px;right:22px;z-index:999;background:var(--navy);color:#fff;padding:12px 16px;border-radius:var(--rs);font-size:13px;font-weight:500;box-shadow:var(--sh2);display:flex;align-items:center;gap:8px;transform:translateY(60px);opacity:0;transition:all .3s ease;max-width:320px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.success{border-left:4px solid var(--green)}.toast.error{border-left:4px solid var(--red)}.toast.info{border-left:4px solid var(--teal)}
 
-.notify-channel { display: none; }
-.notify-channel.active { display: block; }
+/* ── EMPTY ── */
+.empty-state{text-align:center;padding:50px 20px;color:var(--g400)}
+.empty-state svg{margin:0 auto 12px;display:block;opacity:.25}
+.empty-state h4{font-size:14px;font-weight:600;margin-bottom:4px;color:var(--g600)}
+.empty-state p{font-size:12.5px}
 
-.channel-badge {
-  display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px;
-  border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; margin-bottom: 16px;
-}
-.channel-badge.email { background: #eff6ff; color: #1d4ed8; }
-.channel-badge.whatsapp { background: #f0fdf4; color: #15803d; }
-.channel-badge.sms { background: var(--orange-light); color: #c2410c; }
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--g200);border-radius:99px}
 
-.form-lbl { font-size: 12px; font-weight: 600; color: var(--gray-600); margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.05em; }
-.form-inp {
-  width: 100%; border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm);
-  padding: 10px 13px; font-size: 14px; font-family: 'DM Sans', sans-serif;
-  outline: none; transition: border-color 0.2s; color: var(--navy); margin-bottom: 14px;
-}
-.form-inp:focus { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-glow); }
-.form-ta {
-  width: 100%; border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm);
-  padding: 10px 13px; font-size: 14px; font-family: 'DM Sans', sans-serif;
-  outline: none; resize: vertical; min-height: 110px; color: var(--navy);
-  transition: border-color 0.2s; margin-bottom: 14px;
-}
-.form-ta:focus { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-glow); }
+/* ── DETAIL ROWS ── */
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--g100);font-size:13px}
+.info-row:last-child{border-bottom:none}
+.info-row label{color:var(--g400);font-weight:500}
+.info-row span{font-weight:600;color:var(--navy)}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.section-header h2{font-size:17px;font-weight:700}
+.section-header p{font-size:12.5px;color:var(--g400)}
 
-.template-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px; }
-.template-chip {
-  padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;
-  border: 1.5px solid var(--gray-200); background: white; cursor: pointer; color: var(--gray-600);
-  transition: all 0.15s; font-family: 'DM Sans', sans-serif;
-}
-.template-chip:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-light); }
-
-.send-btn {
-  width: 100%; padding: 13px; background: var(--teal); border: none; border-radius: var(--radius-sm);
-  color: white; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif;
-  transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
-}
-.send-btn:hover { background: var(--teal-dark); box-shadow: 0 4px 18px var(--teal-glow); }
-
-.setup-note {
-  background: var(--yellow-light); border: 1.5px solid #fde68a; border-radius: var(--radius-sm);
-  padding: 14px 16px; margin-bottom: 16px;
-}
-.setup-note h5 { font-size: 13px; font-weight: 600; color: #92400e; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
-.setup-note p { font-size: 12px; color: #78350f; line-height: 1.5; }
-.setup-note code { background: #fef3c7; padding: 1px 5px; border-radius: 4px; font-family: monospace; }
-
-/* Toast */
-.toast {
-  position: fixed; bottom: 28px; right: 28px; z-index: 999;
-  background: var(--navy); color: white; padding: 14px 20px;
-  border-radius: var(--radius-sm); font-size: 14px; font-weight: 500;
-  box-shadow: var(--shadow-md); display: flex; align-items: center; gap: 10px;
-  transform: translateY(80px); opacity: 0; transition: all 0.3s ease;
-  max-width: 340px;
-}
-.toast.show { transform: translateY(0); opacity: 1; }
-.toast.success { border-left: 4px solid var(--green); }
-.toast.error { border-left: 4px solid var(--red); }
-.toast.info { border-left: 4px solid var(--teal); }
-
-/* Empty state */
-.empty-state { text-align: center; padding: 60px 20px; color: var(--gray-400); }
-.empty-state svg { margin: 0 auto 16px; display: block; opacity: 0.3; }
-.empty-state p { font-size: 14px; }
-
-/* Pagination */
-.pagination { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-top: 1px solid var(--gray-100); }
-.pag-info { font-size: 13px; color: var(--gray-400); }
-.pag-btns { display: flex; gap: 4px; }
-.pag-btn {
-  width: 32px; height: 32px; border-radius: 7px; border: 1.5px solid var(--gray-200);
-  background: white; cursor: pointer; display: flex; align-items: center; justify-content: center;
-  font-size: 13px; color: var(--navy); transition: all 0.15s; font-family: 'DM Sans', sans-serif;
-}
-.pag-btn:hover { border-color: var(--teal); color: var(--teal); }
-.pag-btn.active { background: var(--teal); color: white; border-color: var(--teal); }
-
-/* Overlay backdrop for panel */
-.panel-backdrop {
-  position: fixed; inset: 0; z-index: 250;
-  background: transparent; display: none;
-}
-.panel-backdrop.open { display: block; }
+/* ── RESPONSIVE TABLE ── */
+.tbl-wrap{overflow-x:auto}
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
-  <div class="sidebar-logo">
-    <div class="logo-sq">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sb">
+  <div class="sb-logo">
+    <div class="sb-mark">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
     </div>
-    <div>
-      <h1>WellPath</h1>
-      <span>Admin Panel</span>
-    </div>
+    <div><h1>WellPath</h1><span>Admin Panel</span></div>
   </div>
-
-  <nav class="sidebar-nav">
-    <div class="nav-section-label">Main</div>
-    <a class="nav-item active" href="#">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+  <nav class="sb-nav">
+    <div class="sb-sec">Main</div>
+    <a class="sb-link active" onclick="nav('dashboard',this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
       Dashboard
     </a>
-    <a class="nav-item" href="#">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <a class="sb-link" onclick="nav('appointments',this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       Appointments
-      <span class="nav-badge" id="sidebarPending">0</span>
+      <span class="sb-badge" id="sbPending">0</span>
     </a>
-    <a class="nav-item" href="#">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <a class="sb-link" onclick="nav('patients',this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       Patients
     </a>
-    <a class="nav-item" href="#">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.22 1.18 2 2 0 012.2 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.18 6.18z"/></svg>
+    <a class="sb-link" onclick="nav('notifications',this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
       Notifications
-      <span class="nav-badge green" id="sidebarNotifBadge">0</span>
+      <span class="sb-badge g" id="sbNotif">0</span>
     </a>
-
-    <div class="nav-section-label" style="margin-top:16px">Settings</div>
-    <a class="nav-item" href="#">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
-      Configuration
+    <div class="sb-sec" style="margin-top:12px">Manage</div>
+    <a class="sb-link" onclick="nav('settings',this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
+      Settings
     </a>
-    <a class="nav-item" href="page1-departments.html" target="_blank">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-      Patient Portal
+    <a class="sb-link" href="index.html" target="_blank">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Patient Portal ↗
     </a>
   </nav>
-
-  <div class="sidebar-footer">
-    <div class="admin-pill">
-      <div class="admin-avatar">DM</div>
-      <div class="admin-pill-info">
-        <strong>Dr. Meera Kapoor</strong>
-        <span>Provider</span>
-      </div>
+  <div class="sb-foot">
+    <div class="sb-prof">
+      <div class="sb-av">MK</div>
+      <div><strong>Dr. Meera Kapoor</strong><span>Provider · Admin</span></div>
     </div>
   </div>
 </aside>
 
-<!-- MAIN -->
+<!-- ═══ MAIN ═══ -->
 <main class="main">
   <div class="topbar">
-    <div class="topbar-left">
-      <h2>Appointment Dashboard</h2>
-      <p id="todayDate">Loading...</p>
+    <div class="tb-l">
+      <h2 id="pageTitle">Dashboard</h2>
+      <p id="todayDate">Loading…</p>
     </div>
-    <div class="topbar-right">
-      <!-- Live indicator -->
-      <div id="liveIndicator" style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--gray-400);padding:6px 12px;background:var(--gray-100);border-radius:20px">
-        <span style="width:7px;height:7px;border-radius:50%;background:var(--gray-300);flex-shrink:0" id="liveDot"></span>
-        <span id="liveLabel">Connecting…</span>
-      </div>
-      <button class="topbar-btn outline" onclick="exportCSV()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Export CSV
+    <div class="tb-r">
+      <div class="live-pill"><span class="live-dot" id="liveDot"></span><span id="liveLabel">Connecting…</span></div>
+      <button class="btn out" onclick="exportCSV()" id="exportBtn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export
       </button>
-      <button class="topbar-btn primary" onclick="openNotifyPanel(null)">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.22 1.18 2 2 0 012.2 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.18 6.18z"/></svg>
+      <button class="btn pri" onclick="openNP(null)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         Send Notification
       </button>
-      <button class="notif-btn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
-        <div class="notif-dot"></div>
+      <button class="icon-btn" onclick="nav('notifications',document.querySelectorAll('.sb-link')[3])">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <div class="notif-dot" id="notifDot"></div>
       </button>
     </div>
   </div>
 
   <div class="content">
-    <!-- Stats -->
-    <div class="stats-row">
-      <div class="stat-card">
-        <div class="stat-icon" style="background:#eff6ff">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+
+    <!-- ════ PAGE: DASHBOARD ════ -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-ico" style="background:#eff6ff"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+          <div><div class="stat-num" id="st-total">—</div><div class="stat-lbl">Total Appointments</div><div class="stat-sub up" id="st-total-sub">All time</div></div>
         </div>
-        <div>
-          <div class="stat-num" id="statTotal">0</div>
-          <div class="stat-label">Total Appointments</div>
-          <div class="stat-change up">↑ All time</div>
+        <div class="stat-card">
+          <div class="stat-ico" style="background:var(--amberl)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
+          <div><div class="stat-num" id="st-pending">—</div><div class="stat-lbl">Awaiting Approval</div><div class="stat-sub warn" id="st-pending-sub">Needs action</div></div>
         </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon" style="background:var(--yellow-light)">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        <div class="stat-card">
+          <div class="stat-ico" style="background:var(--greenl)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg></div>
+          <div><div class="stat-num" id="st-approved">—</div><div class="stat-lbl">Approved</div><div class="stat-sub up">Confirmed</div></div>
         </div>
-        <div>
-          <div class="stat-num" id="statPending">0</div>
-          <div class="stat-label">Awaiting Approval</div>
-          <div class="stat-change pending" id="statPendingNote">Needs action</div>
-        </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon" style="background:var(--green-light)">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
-        </div>
-        <div>
-          <div class="stat-num" id="statApproved">0</div>
-          <div class="stat-label">Approved</div>
-          <div class="stat-change up">Confirmed</div>
+        <div class="stat-card">
+          <div class="stat-ico" style="background:var(--teal3)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2a9d8f" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div><div class="stat-num" id="st-patients">—</div><div class="stat-lbl">Total Patients</div><div class="stat-sub up">Unique</div></div>
         </div>
       </div>
-      <div class="stat-card">
-        <div class="stat-icon" style="background:var(--teal-light)">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07"/></svg>
+
+      <div class="charts-row">
+        <div class="chart-card">
+          <h3>Status Overview</h3><p>Live appointment breakdown</p>
+          <div class="donut-wrap">
+            <svg width="110" height="110" viewBox="0 0 110 110" id="donutSvg"><circle cx="55" cy="55" r="44" fill="none" stroke="var(--g100)" stroke-width="14"/></svg>
+            <div class="donut-legend" id="donutLegend"></div>
+          </div>
         </div>
-        <div>
-          <div class="stat-num" id="statNotified">0</div>
-          <div class="stat-label">Notified</div>
-          <div class="stat-change up">Via all channels</div>
+        <div class="chart-card">
+          <h3>Bookings by Date</h3><p>Last 7 scheduled dates</p>
+          <div class="mini-bars" id="miniBarsDash"></div>
+        </div>
+        <div class="chart-card" style="overflow:hidden">
+          <h3>Recent Activity</h3><p>Latest appointment actions</p>
+          <div class="timeline" id="activityFeed"></div>
+        </div>
+      </div>
+
+      <!-- Pending approvals table on dashboard -->
+      <div class="tbl-card">
+        <div class="card-head">
+          <h3>⏳ Pending Approvals</h3>
+          <button class="btn out" style="font-size:12px;padding:6px 12px" onclick="nav('appointments',document.querySelectorAll('.sb-link')[1])">View All →</button>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Patient</th><th>Service</th><th>Date & Time</th><th>Ref</th><th>Actions</th></tr></thead>
+            <tbody id="dashPendingBody"></tbody>
+          </table>
         </div>
       </div>
     </div>
 
-    <!-- Filter bar -->
-    <div class="filter-bar">
-      <div class="search-wrap">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-        <input type="text" class="search-input" id="searchInput" placeholder="Search patient name, service..." oninput="renderTable()">
+    <!-- ════ PAGE: APPOINTMENTS ════ -->
+    <div class="page" id="page-appointments">
+      <div class="section-header" style="margin-bottom:16px">
+        <div><h2>All Appointments</h2><p id="apptSubtitle">Loading…</p></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn out" onclick="exportCSV()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export CSV
+          </button>
+          <button class="btn out" onclick="exportExcel()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Export Excel
+          </button>
+        </div>
       </div>
-      <select class="filter-select" id="statusFilter" onchange="renderTable()">
-        <option value="">All Statuses</option>
-        <option value="pending">Pending</option>
-        <option value="approved">Approved</option>
-        <option value="rejected">Rejected</option>
-        <option value="completed">Completed</option>
-      </select>
-      <select class="filter-select" id="serviceFilter" onchange="renderTable()">
-        <option value="">All Services</option>
-        <option value="Weight Loss Consultation">Weight Loss</option>
-        <option value="Body Composition Analysis">Body Composition</option>
-        <option value="Follow-up Session">Follow-up</option>
-      </select>
-      <div class="filter-tabs">
-        <button class="filter-tab active" onclick="setDateFilter('all',this)">All</button>
-        <button class="filter-tab" onclick="setDateFilter('today',this)">Today</button>
-        <button class="filter-tab" onclick="setDateFilter('week',this)">This Week</button>
+
+      <!-- Rich filter bar -->
+      <div class="filter-bar">
+        <div class="srch-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input type="text" class="srch" id="apptSearch" placeholder="Search name, ref, phone…" oninput="renderApptTable()">
+        </div>
+        <select class="fsel" id="apptStatus" onchange="renderApptTable()">
+          <option value="">All Statuses</option>
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+          <option value="completed">Completed</option>
+        </select>
+        <select class="fsel" id="apptService" onchange="renderApptTable()">
+          <option value="">All Services</option>
+          <option value="Weight Loss Consultation">Weight Loss</option>
+          <option value="Body Composition Analysis">Body Composition</option>
+          <option value="Follow-up Session">Follow-up</option>
+        </select>
+        <select class="fsel" id="apptGender" onchange="renderApptTable()">
+          <option value="">All Genders</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+        <div class="ftabs">
+          <button class="ftab active" onclick="setApptFilter('all',this)">All</button>
+          <button class="ftab" onclick="setApptFilter('today',this)">Today</button>
+          <button class="ftab" onclick="setApptFilter('week',this)">This Week</button>
+          <button class="ftab" onclick="setApptFilter('month',this)">This Month</button>
+        </div>
+      </div>
+      <div class="filter-bar" style="padding:10px 16px">
+        <label style="font-size:12px;font-weight:600;color:var(--g600)">Date Range:</label>
+        <input type="date" class="date-inp" id="dateFrom" onchange="renderApptTable()">
+        <span style="font-size:12px;color:var(--g400)">to</span>
+        <input type="date" class="date-inp" id="dateTo" onchange="renderApptTable()">
+        <button class="btn out" style="font-size:12px;padding:6px 12px" onclick="clearDates()">Clear</button>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:6px">
+          <label style="font-size:12px;font-weight:600;color:var(--g600)">Sort:</label>
+          <select class="fsel" id="apptSort" onchange="renderApptTable()">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="name">Name A–Z</option>
+            <option value="status">By Status</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="tbl-card">
+        <div class="card-head">
+          <h3>Appointments</h3><span id="apptCount">0 records</span>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th onclick="sortBy('name')">Patient ↕</th>
+                <th>Service</th>
+                <th onclick="sortBy('date')">Date & Time ↕</th>
+                <th onclick="sortBy('status')">Status ↕</th>
+                <th>Age/Gender</th>
+                <th>Notified</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="apptBody"></tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <span class="pag-info" id="apptPagInfo">—</span>
+          <div class="pag-btns" id="apptPagBtns"></div>
+        </div>
       </div>
     </div>
 
-    <!-- Table -->
-    <div class="table-card">
-      <div class="table-header">
-        <h3>All Appointments</h3>
-        <span id="tableCount">0 records</span>
+    <!-- ════ PAGE: PATIENTS ════ -->
+    <div class="page" id="page-patients">
+      <div class="section-header" style="margin-bottom:16px">
+        <div><h2>Patients</h2><p id="patSubtitle">All unique patients</p></div>
+        <button class="btn out" onclick="exportPatientCSV()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export Patients
+        </button>
       </div>
-      <div style="overflow-x:auto">
-        <table>
-          <thead>
-            <tr>
-              <th>Patient</th>
-              <th>Service</th>
-              <th>Date &amp; Time</th>
-              <th>Status</th>
-              <th>Notified</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody">
-            <tr><td colspan="6"><div class="empty-state"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg><p>No appointments yet. Patients will appear here once they book.</p></div></td></tr>
-          </tbody>
-        </table>
+      <div class="filter-bar" style="margin-bottom:16px">
+        <div class="srch-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input type="text" class="srch" id="patSearch" placeholder="Search patients…" oninput="renderPatients()">
+        </div>
+        <select class="fsel" id="patGender" onchange="renderPatients()">
+          <option value="">All Genders</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+        <select class="fsel" id="patStatus" onchange="renderPatients()">
+          <option value="">Any Status</option>
+          <option value="pending">Has Pending</option>
+          <option value="approved">Has Approved</option>
+          <option value="completed">Completed</option>
+        </select>
       </div>
-      <div class="pagination">
-        <span class="pag-info" id="pagInfo">Showing 0 of 0</span>
-        <div class="pag-btns" id="pagBtns"></div>
+      <div class="pat-grid" id="patGrid"></div>
+      <div class="tbl-card">
+        <div class="card-head"><h3>Patient Records</h3><span id="patCount">—</span></div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Patient</th><th>Age</th><th>Gender</th><th>Phone</th><th>Total Appts</th><th>Last Visit</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="patBody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
+
+    <!-- ════ PAGE: NOTIFICATIONS ════ -->
+    <div class="page" id="page-notifications">
+      <div class="section-header" style="margin-bottom:16px">
+        <div><h2>Notifications</h2><p>Appointment activity log</p></div>
+        <button class="btn out" onclick="clearActivity()">Mark All Read</button>
+      </div>
+      <div class="notif-list" id="notifList"></div>
+    </div>
+
+    <!-- ════ PAGE: SETTINGS ════ -->
+    <div class="page" id="page-settings">
+      <div class="section-header" style="margin-bottom:20px">
+        <div><h2>Settings</h2><p>Manage clinic and notification preferences</p></div>
+      </div>
+      <div class="settings-grid">
+        <div class="settings-card">
+          <h3>Clinic Information</h3>
+          <p>Update your clinic details</p>
+          <div class="form-row"><label class="form-lbl">Clinic Name</label><input class="form-inp" value="WellPath Clinic" id="set-name"></div>
+          <div class="form-row"><label class="form-lbl">Doctor Name</label><input class="form-inp" value="Dr. Meera Kapoor" id="set-doc"></div>
+          <div class="form-row"><label class="form-lbl">Specialty</label><input class="form-inp" value="Weight Loss & Metabolic Health" id="set-spec"></div>
+          <div class="form-row"><label class="form-lbl">Contact Phone</label><input class="form-inp" value="+91 98765 43210" id="set-phone"></div>
+          <div class="form-row"><label class="form-lbl">Contact Email</label><input class="form-inp" value="clinic@wellpath.com" id="set-email"></div>
+          <button class="btn pri" onclick="saveSettings()">Save Changes</button>
+        </div>
+        <div class="settings-card">
+          <h3>Notification Preferences</h3>
+          <p>Control when you get alerts</p>
+          <div class="toggle-row">
+            <div><span>New Appointment Alert</span><small>Notify when patient books</small></div>
+            <button class="toggle on" id="tog1" onclick="toggleSetting(this)"></button>
+          </div>
+          <div class="toggle-row">
+            <div><span>Approval Reminders</span><small>Remind pending approvals daily</small></div>
+            <button class="toggle on" id="tog2" onclick="toggleSetting(this)"></button>
+          </div>
+          <div class="toggle-row">
+            <div><span>Patient Notifications</span><small>Auto-notify after approve/reject</small></div>
+            <button class="toggle off" id="tog3" onclick="toggleSetting(this)"></button>
+          </div>
+          <div class="toggle-row">
+            <div><span>Weekly Report</span><small>Email summary every Monday</small></div>
+            <button class="toggle off" id="tog4" onclick="toggleSetting(this)"></button>
+          </div>
+        </div>
+        <div class="settings-card">
+          <h3>EmailJS Configuration</h3>
+          <p>Set up email notifications for patients</p>
+          <div class="form-row"><label class="form-lbl">Service ID</label><input class="form-inp" id="ejs-svc" placeholder="service_abc123"></div>
+          <div class="form-row"><label class="form-lbl">Template ID</label><input class="form-inp" id="ejs-tpl" placeholder="template_xyz456"></div>
+          <div class="form-row"><label class="form-lbl">Public Key</label><input class="form-inp" id="ejs-key" placeholder="Your public key"></div>
+          <div style="background:var(--amberl);border-radius:var(--rs);padding:11px 13px;margin-bottom:14px;font-size:12px;color:#92400e">
+            💡 Get free keys at <strong>emailjs.com</strong> — 200 emails/month free
+          </div>
+          <button class="btn pri" onclick="saveEmailJS()">Save EmailJS Keys</button>
+        </div>
+        <div class="settings-card">
+          <h3>Firebase Connection</h3>
+          <p>Database status and info</p>
+          <div class="info-row"><label>Status</label><span id="set-fb-status" style="color:var(--green)">● Connected</span></div>
+          <div class="info-row"><label>Project ID</label><span style="font-family:monospace;font-size:12px">wellpath-clinic</span></div>
+          <div class="info-row"><label>Database</label><span>Firestore</span></div>
+          <div class="info-row"><label>Total Records</label><span id="set-fb-count">—</span></div>
+          <div class="info-row"><label>Last Sync</label><span id="set-fb-sync">—</span></div>
+          <div style="margin-top:14px;padding:11px 13px;background:var(--greenl);border-radius:var(--rs);font-size:12px;color:#15803d;border:1px solid var(--green2)">
+            ✅ Real-time sync active — dashboard updates instantly when patients book.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
 </main>
 
-<!-- PATIENT DETAIL MODAL -->
-<div class="modal-overlay" id="detailModal">
+<!-- ════ APPOINTMENT DETAIL MODAL ════ -->
+<div class="overlay" id="apptModal">
   <div class="modal">
-    <div class="modal-head">
-      <div>
-        <h3 id="modalName">Patient Name</h3>
-        <p id="modalSubtitle">Service · Date</p>
+    <div class="m-head">
+      <div style="display:flex;align-items:center;gap:12px;flex:1">
+        <div class="m-head-av av" id="mAv">?</div>
+        <div><h3 id="mName">Patient</h3><p id="mSub">Details</p></div>
       </div>
-      <button class="modal-close" onclick="closeModal()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-      </button>
+      <button class="m-close" onclick="closeModal()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
     </div>
-    <div class="modal-body">
-      <div class="modal-section">
-        <div class="modal-section-title">Patient Details</div>
-        <div class="detail-grid" id="modalDetails"></div>
+    <div class="m-body">
+      <div class="m-sec">
+        <div class="m-sec-title">Patient Details</div>
+        <div class="det-grid" id="mDetails"></div>
       </div>
-      <div class="modal-section" id="qaSection">
-        <div class="modal-section-title">Health Questionnaire Answers</div>
-        <div id="modalQA"></div>
+      <div class="m-sec">
+        <div class="m-sec-title">Appointment Info</div>
+        <div id="mApptInfo"></div>
+      </div>
+      <div class="m-sec" id="mQASec">
+        <div class="m-sec-title">Health Questionnaire</div>
+        <div id="mQA"></div>
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="modal-btn approve" id="modalApproveBtn" onclick="approveFromModal()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-        Approve
-      </button>
-      <button class="modal-btn reject" id="modalRejectBtn" onclick="rejectFromModal()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-        Reject
-      </button>
-      <button class="modal-btn notify" onclick="notifyFromModal()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8"/></svg>
-        Notify Patient
-      </button>
+    <div class="m-foot" id="mFoot"></div>
+  </div>
+</div>
+
+<!-- ════ PATIENT DETAIL MODAL ════ -->
+<div class="overlay" id="patModal">
+  <div class="modal">
+    <div class="m-head">
+      <div style="display:flex;align-items:center;gap:12px;flex:1">
+        <div class="m-head-av av" id="pmAv">?</div>
+        <div><h3 id="pmName">Patient</h3><p id="pmSub">Details</p></div>
+      </div>
+      <button class="m-close" onclick="closePM()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div class="m-body">
+      <div class="m-sec">
+        <div class="m-sec-title">Patient Info</div>
+        <div class="det-grid" id="pmDetails"></div>
+      </div>
+      <div class="m-sec">
+        <div class="m-sec-title">Appointment History</div>
+        <div id="pmHistory"></div>
+      </div>
+      <div class="m-sec">
+        <div class="m-sec-title">Latest Questionnaire</div>
+        <div id="pmQA"></div>
+      </div>
+    </div>
+    <div class="m-foot">
+      <button class="mbtn notify" onclick="closePM();openNPForPatient()">↗ Notify Patient</button>
+      <button class="mbtn grey" onclick="closePM()">Close</button>
     </div>
   </div>
 </div>
 
-<!-- NOTIFY PANEL -->
-<div class="panel-backdrop" id="panelBackdrop" onclick="closeNotifyPanel()"></div>
-<div class="notify-panel" id="notifyPanel">
-  <div class="notify-panel-head">
-    <div>
-      <h3>Send Notification</h3>
-      <p style="font-size:13px;color:var(--gray-400);margin-top:3px" id="notifyTarget">Select a patient</p>
+<!-- ════ CONFIRM DIALOG ════ -->
+<div class="conf-overlay" id="confDlg">
+  <div class="conf-box">
+    <div class="conf-ico" id="confIco"></div>
+    <h3 id="confTitle">Are you sure?</h3>
+    <p id="confMsg">This action cannot be undone.</p>
+    <div class="conf-btns">
+      <button class="cbtn cancel" onclick="closeConf()">Cancel</button>
+      <button class="cbtn" id="confOk" onclick="doConf()">Confirm</button>
     </div>
-    <button class="panel-close" onclick="closeNotifyPanel()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-    </button>
   </div>
+</div>
 
-  <div class="notify-body">
-    <div class="notify-tabs">
-      <button class="notify-tab active" onclick="switchNotifTab('email',this)">📧 Email</button>
-      <button class="notify-tab" onclick="switchNotifTab('whatsapp',this)">💬 WhatsApp</button>
-      <button class="notify-tab" onclick="switchNotifTab('sms',this)">📱 SMS</button>
+<!-- ════ NOTIFY PANEL ════ -->
+<div class="np-back" id="npBack" onclick="closeNP()"></div>
+<div class="np" id="np">
+  <div class="np-head">
+    <div><h3>Send Notification</h3><p id="npTarget">Select a patient</p></div>
+    <button class="np-cls" onclick="closeNP()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  </div>
+  <div class="np-body">
+    <div class="np-tabs">
+      <button class="np-tab active" onclick="switchNPTab('email',this)">📧 Email</button>
+      <button class="np-tab" onclick="switchNPTab('whatsapp',this)">💬 WhatsApp</button>
+      <button class="np-tab" onclick="switchNPTab('sms',this)">📱 SMS</button>
     </div>
-
     <!-- EMAIL -->
-    <div class="notify-channel active" id="tab-email">
-      <div class="setup-note">
-        <h5>⚙️ Setup Required</h5>
-        <p>Uses <strong>EmailJS</strong> (free). Go to <code>emailjs.com</code> → create account → get your <code>SERVICE_ID</code>, <code>TEMPLATE_ID</code> &amp; <code>PUBLIC_KEY</code> → paste below and uncomment the send code.</p>
+    <div class="np-ch active" id="np-email">
+      <div class="setup-note"><h5>⚙️ EmailJS Required</h5><p>Add keys in <strong>Settings</strong> or enter below. Free at <code>emailjs.com</code></p></div>
+      <div class="ch-badge em"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Email via EmailJS</div>
+      <label class="flbl">To Email</label><input class="finp" id="emailTo" type="email" placeholder="patient@email.com">
+      <label class="flbl">Subject</label><input class="finp" id="emailSub" placeholder="Your appointment update — WellPath">
+      <label class="flbl">Message</label>
+      <div class="tpl-chips">
+        <button class="tpl-chip" onclick="loadTpl('email','approved')">✅ Approved</button>
+        <button class="tpl-chip" onclick="loadTpl('email','rejected')">❌ Rejected</button>
+        <button class="tpl-chip" onclick="loadTpl('email','reminder')">⏰ Reminder</button>
+        <button class="tpl-chip" onclick="loadTpl('email','custom')">✏️ Custom</button>
       </div>
-      <div class="channel-badge email">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        Email via EmailJS (Free)
-      </div>
-      <label class="form-lbl">To Email</label>
-      <input class="form-inp" id="emailTo" type="email" placeholder="patient@email.com">
-      <label class="form-lbl">Subject</label>
-      <input class="form-inp" id="emailSubject" value="Your appointment has been approved — WellPath Clinic">
-      <label class="form-lbl">Message</label>
-      <div class="template-chips">
-        <button class="template-chip" onclick="loadTemplate('email','approved')">✅ Approved</button>
-        <button class="template-chip" onclick="loadTemplate('email','rejected')">❌ Rejected</button>
-        <button class="template-chip" onclick="loadTemplate('email','reminder')">⏰ Reminder</button>
-        <button class="template-chip" onclick="loadTemplate('email','custom')">✏️ Custom</button>
-      </div>
-      <textarea class="form-ta" id="emailBody" placeholder="Type your message here..."></textarea>
-
-      <details style="margin-bottom:16px">
-        <summary style="font-size:12px;font-weight:600;color:var(--gray-600);cursor:pointer;margin-bottom:8px">EmailJS Configuration</summary>
-        <input class="form-inp" id="ejs_service" placeholder="Service ID (e.g. service_abc123)">
-        <input class="form-inp" id="ejs_template" placeholder="Template ID (e.g. template_xyz456)">
-        <input class="form-inp" id="ejs_key" placeholder="Public Key (e.g. abc123XYZ...)">
-        <p style="font-size:11px;color:var(--gray-400)">These are stored only in this browser session.</p>
-      </details>
-
-      <button class="send-btn" onclick="sendEmail()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        Send Email
-      </button>
+      <textarea class="fta" id="emailBody" placeholder="Type your message here…"></textarea>
+      <button class="send-btn" onclick="sendEmail()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Send Email</button>
     </div>
-
     <!-- WHATSAPP -->
-    <div class="notify-channel" id="tab-whatsapp">
-      <div class="setup-note">
-        <h5>⚙️ Setup Required</h5>
-        <p>Uses <strong>Twilio WhatsApp API</strong>. Sign up at <code>twilio.com</code> → get Account SID &amp; Auth Token → enable WhatsApp Sandbox. Then replace the backend URL below with your server endpoint.</p>
+    <div class="np-ch" id="np-whatsapp">
+      <div class="ch-badge wa"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>WhatsApp Web (no setup needed)</div>
+      <label class="flbl">Phone Number (with country code)</label><input class="finp" id="waNum" placeholder="+919876543210">
+      <label class="flbl">Message</label>
+      <div class="tpl-chips">
+        <button class="tpl-chip" onclick="loadTpl('wa','approved')">✅ Approved</button>
+        <button class="tpl-chip" onclick="loadTpl('wa','reminder')">⏰ Reminder</button>
+        <button class="tpl-chip" onclick="loadTpl('wa','custom')">✏️ Custom</button>
       </div>
-      <div class="channel-badge whatsapp">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-        WhatsApp via Twilio
-      </div>
-      <label class="form-lbl">WhatsApp Number (with country code)</label>
-      <input class="form-inp" id="waNumber" placeholder="+919876543210">
-      <label class="form-lbl">Message</label>
-      <div class="template-chips">
-        <button class="template-chip" onclick="loadTemplate('wa','approved')">✅ Approved</button>
-        <button class="template-chip" onclick="loadTemplate('wa','reminder')">⏰ Reminder</button>
-        <button class="template-chip" onclick="loadTemplate('wa','custom')">✏️ Custom</button>
-      </div>
-      <textarea class="form-ta" id="waBody" placeholder="Hi {name}, your appointment is confirmed..."></textarea>
-
-      <div style="background:var(--gray-100);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:16px">
-        <p style="font-size:12px;font-weight:600;color:var(--gray-600);margin-bottom:8px">Backend API URL</p>
-        <input class="form-inp" id="waApiUrl" style="margin-bottom:0" placeholder="https://your-server.com/api/whatsapp" value="https://your-server.com/api/whatsapp">
-        <p style="font-size:11px;color:var(--gray-400);margin-top:6px">Your server must relay the message to Twilio (to avoid exposing credentials in browser).</p>
-      </div>
-
-      <button class="send-btn" style="background:#25D366" onclick="sendWhatsApp()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-        Send WhatsApp
-      </button>
-
-      <div style="margin-top:14px;background:var(--teal-light);border-radius:var(--radius-sm);padding:12px 14px">
-        <p style="font-size:12px;font-weight:600;color:var(--teal-dark);margin-bottom:4px">💡 Quick Option</p>
-        <p style="font-size:12px;color:var(--gray-700)">Or open WhatsApp Web directly with a pre-filled message:</p>
-        <button onclick="openWhatsAppWeb()" style="margin-top:8px;background:var(--teal);color:white;border:none;padding:7px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">Open WhatsApp Web ↗</button>
-      </div>
+      <textarea class="fta" id="waBody" placeholder="Hi {name}, your appointment…"></textarea>
+      <button class="send-btn" style="background:#25D366;margin-bottom:0" onclick="openWA()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Open WhatsApp Web ↗</button>
     </div>
-
     <!-- SMS -->
-    <div class="notify-channel" id="tab-sms">
-      <div class="setup-note">
-        <h5>⚙️ Setup Required</h5>
-        <p>Uses <strong>Twilio SMS</strong>. Get credentials at <code>twilio.com</code> and set up a backend endpoint. Direct SMS from browser requires a server relay for security.</p>
+    <div class="np-ch" id="np-sms">
+      <div class="setup-note"><h5>⚙️ Twilio Required</h5><p>Connect <code>twilio.com</code> backend to send real SMS.</p></div>
+      <div class="ch-badge sm">📱 SMS via Twilio</div>
+      <label class="flbl">Phone Number</label><input class="finp" id="smsNum" placeholder="+919876543210">
+      <label class="flbl">Message (160 chars)</label>
+      <div class="tpl-chips">
+        <button class="tpl-chip" onclick="loadTpl('sms','approved')">✅ Approved</button>
+        <button class="tpl-chip" onclick="loadTpl('sms','reminder')">⏰ Reminder</button>
       </div>
-      <div class="channel-badge sms">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07"/></svg>
-        SMS via Twilio
-      </div>
-      <label class="form-lbl">Phone Number</label>
-      <input class="form-inp" id="smsNumber" placeholder="+919876543210">
-      <label class="form-lbl">SMS Message (160 chars)</label>
-      <div class="template-chips">
-        <button class="template-chip" onclick="loadTemplate('sms','approved')">✅ Approved</button>
-        <button class="template-chip" onclick="loadTemplate('sms','reminder')">⏰ Reminder</button>
-      </div>
-      <textarea class="form-ta" id="smsBody" style="min-height:80px" maxlength="320" placeholder="WellPath: Your appointment is confirmed for..."></textarea>
-      <p id="smsCharCount" style="font-size:12px;color:var(--gray-400);text-align:right;margin-bottom:12px">0 / 160</p>
-
-      <button class="send-btn" style="background:var(--orange)" onclick="sendSMS()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07"/></svg>
-        Send SMS
-      </button>
+      <textarea class="fta" id="smsBody" style="min-height:80px" maxlength="320" placeholder="WellPath: Your appointment…"></textarea>
+      <p id="smsCnt" style="font-size:11.5px;color:var(--g400);text-align:right;margin-bottom:10px">0/160</p>
+      <button class="send-btn" style="background:var(--orange)" onclick="sendSMS()">Send SMS</button>
     </div>
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<script type="module">
-// ══════════════════════════════════════════════════════
-//  FIREBASE CONFIG — paste your keys from Firebase Console
-//  Project Settings → Your Apps → Web app → Config
-// ══════════════════════════════════════════════════════
-import { initializeApp }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
-  getFirestore, collection, onSnapshot, doc,
-  updateDoc, query, orderBy, serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+<!-- ════════════════════════════════════════
+     GLOBAL JS
+════════════════════════════════════════ -->
+<script>
+// ── State ───────────────────────────────────────────
+window.DB = [];          // all appointments from Firebase
+let currentModalId = null;
+let currentNPId    = null;
+let _pendingConf   = null;
+let apptPage       = 1;
+let apptSort       = 'newest';
+let apptSortDir    = 1;
+let apptDateFilter = 'all';
+const PAGE_SIZE    = 12;
+const AV_CLS       = ['av-a','av-b','av-c','av-d','av-e'];
+const COLORS       = ['#2a9d8f','#16a34a','#2563eb','#d97706','#dc2626','#7c3aed','#f4845f'];
+const activity     = [];
 
-const firebaseConfig = {
+// ── Init ────────────────────────────────────────────
+document.getElementById('todayDate').textContent =
+  new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+// ── Navigation ──────────────────────────────────────
+function nav(pageId, el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sb-link').forEach(l=>l.classList.remove('active'));
+  document.getElementById('page-'+pageId).classList.add('active');
+  if(el) el.classList.add('active');
+  const titles={dashboard:'Dashboard',appointments:'Appointments',patients:'Patients',notifications:'Notifications',settings:'Settings'};
+  document.getElementById('pageTitle').textContent = titles[pageId]||pageId;
+  if(pageId==='appointments') renderApptTable();
+  if(pageId==='patients')     renderPatients();
+  if(pageId==='notifications')renderNotifs();
+}
+
+// ── Live indicator ──────────────────────────────────
+window._goLive = ()=>{
+  document.getElementById('liveDot').className='live-dot on';
+  document.getElementById('liveLabel').textContent='Live';
+  document.getElementById('set-fb-status').textContent='● Connected';
+  document.getElementById('set-fb-status').style.color='var(--green)';
+  document.getElementById('set-fb-sync').textContent=new Date().toLocaleTimeString();
+};
+window._goErr = ()=>{
+  document.getElementById('liveDot').className='live-dot err';
+  document.getElementById('liveLabel').textContent='Offline';
+  document.getElementById('set-fb-status').textContent='● Disconnected';
+  document.getElementById('set-fb-status').style.color='var(--red)';
+};
+
+// ── Data refresh (called by Firebase onSnapshot) ────
+window._refresh = function(){
+  updateStats();
+  renderDashboard();
+  renderApptTable();
+  renderPatients();
+  document.getElementById('set-fb-count').textContent = window.DB.length;
+  document.getElementById('set-fb-sync').textContent  = new Date().toLocaleTimeString();
+};
+
+// ── Stats ───────────────────────────────────────────
+function updateStats(){
+  const ap = window.DB;
+  const p  = ap.filter(a=>a.status==='pending').length;
+  const ok = ap.filter(a=>a.status==='approved').length;
+  const uniqPats = new Set(ap.map(a=>a.name)).size;
+  document.getElementById('st-total').textContent  = ap.length;
+  document.getElementById('st-pending').textContent= p;
+  document.getElementById('st-approved').textContent=ok;
+  document.getElementById('st-patients').textContent=uniqPats;
+  document.getElementById('st-pending-sub').textContent=p>0?`${p} need action`:'All clear ✓';
+  document.getElementById('st-total-sub').textContent=ap.length>0?`${ap.length} total`:'None yet';
+  document.getElementById('sbPending').textContent = p;
+  document.getElementById('sbNotif').textContent   = activity.filter(a=>!a.read).length;
+  if(p>0) document.getElementById('notifDot').style.display='block';
+  else    document.getElementById('notifDot').style.display='none';
+  document.getElementById('apptSubtitle').textContent=`${ap.length} total · ${p} pending`;
+  document.getElementById('patSubtitle').textContent=`${uniqPats} unique patients`;
+}
+
+// ── Dashboard render ────────────────────────────────
+function renderDashboard(){
+  renderDonut();
+  renderMiniBarsDash();
+  renderActivityFeed();
+  renderDashPending();
+}
+
+function renderDonut(){
+  const ap=window.DB;
+  const C={pending:{n:0,c:'#d97706',l:'Pending'},approved:{n:0,c:'#16a34a',l:'Approved'},rejected:{n:0,c:'#dc2626',l:'Rejected'},completed:{n:0,c:'#2563eb',l:'Completed'}};
+  ap.forEach(a=>{ if(C[a.status]) C[a.status].n++; });
+  const total=Object.values(C).reduce((s,v)=>s+v.n,0)||1;
+  const r=44,cx=55,cy=55,circ=2*Math.PI*r;
+  const svg=document.getElementById('donutSvg');
+  svg.querySelectorAll('.ds').forEach(e=>e.remove());
+  let off=0;
+  Object.values(C).forEach(v=>{
+    if(!v.n)return;
+    const dash=(v.n/total)*circ;
+    const seg=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    seg.setAttribute('class','ds');seg.setAttribute('cx',cx);seg.setAttribute('cy',cy);seg.setAttribute('r',r);
+    seg.setAttribute('fill','none');seg.setAttribute('stroke',v.c);seg.setAttribute('stroke-width','14');
+    seg.setAttribute('stroke-dasharray',`${dash} ${circ-dash}`);
+    seg.setAttribute('stroke-dashoffset',-(off*circ-circ/4));
+    svg.appendChild(seg);off+=v.n/total;
+  });
+  document.getElementById('donutLegend').innerHTML=Object.values(C).map(v=>`
+    <div class="donut-item"><div class="donut-dot" style="background:${v.c}"></div>
+    <span style="color:var(--g600)">${v.l}</span><span class="donut-val">${v.n}</span></div>`).join('');
+}
+
+function renderMiniBarsDash(){
+  const ap=window.DB;
+  const dc={};ap.forEach(a=>{const k=a.date||'—';dc[k]=(dc[k]||0)+1;});
+  const entries=Object.entries(dc).slice(-7);
+  const max=Math.max(...entries.map(e=>e[1]),1);
+  const c=document.getElementById('miniBarsDash');
+  if(!entries.length){c.innerHTML='<p style="font-size:12px;color:var(--g400);width:100%;text-align:center;padding:20px">No data yet</p>';return;}
+  c.innerHTML=entries.map(([d,n],i)=>`
+    <div class="mbar-wrap">
+      <div class="mbar-val">${n}</div>
+      <div class="mbar" style="height:${Math.round((n/max)*80)}px;background:${COLORS[i%COLORS.length]}"></div>
+      <div class="mbar-lbl">${(d.split(',')[0]||d).slice(0,3)}</div>
+    </div>`).join('');
+}
+
+function renderActivityFeed(){
+  const el=document.getElementById('activityFeed');
+  if(!activity.length){el.innerHTML='<p style="font-size:12px;color:var(--g400);padding:10px 0">No recent activity</p>';return;}
+  el.innerHTML=activity.slice(0,6).map(a=>`
+    <div class="tl-item">
+      <div class="tl-dot" style="background:${a.color}"></div>
+      <div class="tl-time">${a.time}</div>
+      <div class="tl-txt">${a.text}</div>
+    </div>`).join('');
+}
+
+function logActivity(text,color='#2a9d8f'){
+  activity.unshift({text,color,time:new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),read:false});
+  if(activity.length>50)activity.pop();
+  renderActivityFeed();
+  renderNotifs();
+  document.getElementById('sbNotif').textContent=activity.filter(a=>!a.read).length;
+}
+
+function renderDashPending(){
+  const pending=window.DB.filter(a=>a.status==='pending').slice(0,5);
+  const tbody=document.getElementById('dashPendingBody');
+  if(!pending.length){
+    tbody.innerHTML=`<tr><td colspan="5"><div class="empty-state" style="padding:30px">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
+      <h4>All clear!</h4><p>No pending approvals</p></div></td></tr>`;return;
+  }
+  tbody.innerHTML=pending.map(a=>`
+    <tr onclick="openModal('${a._id}')">
+      <td><div class="pat-cell"><div class="av ${avCls(a.id)}">${initials(a.name)}</div>
+        <div><div class="pat-name">${a.name}</div><div class="pat-meta">${a.age}y · ${a.gender}</div></div></div></td>
+      <td style="font-size:12.5px;color:var(--g600)">${a.service}</td>
+      <td style="font-size:12.5px"><strong>${a.date}</strong><br><span style="color:var(--g400)">${a.time}</span></td>
+      <td style="font-family:monospace;font-size:11px">${a.ref}</td>
+      <td><div class="act-cell">
+        <button class="abtn approve" onclick="askApprove('${a._id}',event)">✓ Approve</button>
+        <button class="abtn reject"  onclick="askReject('${a._id}',event)">✗ Reject</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+// ── Appointments Table ──────────────────────────────
+function setApptFilter(f,btn){
+  apptDateFilter=f;apptPage=1;
+  document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  renderApptTable();
+}
+function clearDates(){
+  document.getElementById('dateFrom').value='';
+  document.getElementById('dateTo').value='';
+  renderApptTable();
+}
+function sortBy(col){
+  if(apptSort===col) apptSortDir*=-1;
+  else{apptSort=col;apptSortDir=1;}
+  renderApptTable();
+}
+
+function getApptFiltered(){
+  const srch=(document.getElementById('apptSearch').value||'').toLowerCase();
+  const st  =document.getElementById('apptStatus').value;
+  const sv  =document.getElementById('apptService').value;
+  const gnd =document.getElementById('apptGender').value;
+  const sort=document.getElementById('apptSort').value;
+  const dfrom=document.getElementById('dateFrom').value;
+  const dto  =document.getElementById('dateTo').value;
+  let arr=[...window.DB];
+
+  if(srch) arr=arr.filter(a=>
+    (a.name||'').toLowerCase().includes(srch)||
+    (a.ref||'').toLowerCase().includes(srch)||
+    (a.phone||'').includes(srch)||
+    (a.email||'').toLowerCase().includes(srch));
+  if(st)  arr=arr.filter(a=>a.status===st);
+  if(sv)  arr=arr.filter(a=>a.service===sv);
+  if(gnd) arr=arr.filter(a=>a.gender===gnd);
+
+  if(apptDateFilter==='today'){
+    const t=new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    arr=arr.filter(a=>a.date===t||a.date.includes(new Date().getDate()));
+  }
+  if(apptDateFilter==='week'){
+    // Filter by appointments in next 7 days (simple check)
+    arr=arr.filter(a=>a.date&&a.date!=='—');
+  }
+  if(apptDateFilter==='month'){arr=arr.filter(a=>a.date&&a.date!=='—');}
+
+  // Sort
+  if(sort==='newest'||sort==='oldest'){
+    const dir=sort==='newest'?-1:1;
+    arr.sort((a,b)=>{const ia=window.DB.indexOf(a),ib=window.DB.indexOf(b);return dir*(ia-ib);});
+  } else if(sort==='name'){
+    arr.sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+  } else if(sort==='status'){
+    const order={pending:0,approved:1,completed:2,rejected:3};
+    arr.sort((a,b)=>(order[a.status]||0)-(order[b.status]||0));
+  }
+  return arr;
+}
+
+function renderApptTable(){
+  const filtered=getApptFiltered();
+  const start=(apptPage-1)*PAGE_SIZE;
+  const page=filtered.slice(start,start+PAGE_SIZE);
+  const tbody=document.getElementById('apptBody');
+  document.getElementById('apptCount').textContent=filtered.length+' record'+(filtered.length!==1?'s':'');
+  document.getElementById('apptPagInfo').textContent=filtered.length
+    ?`Showing ${start+1}–${Math.min(start+PAGE_SIZE,filtered.length)} of ${filtered.length}`:'No results';
+
+  if(!page.length){
+    tbody.innerHTML=`<tr><td colspan="7"><div class="empty-state">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <h4>${window.DB.length===0?'No appointments yet':'No results match your filters'}</h4>
+      <p>${window.DB.length===0?'Patients will appear here after booking.':'Try adjusting filters or search.'}</p>
+    </div></td></tr>`;
+  } else {
+    tbody.innerHTML=page.map(a=>{
+      const sLbl=a.status.charAt(0).toUpperCase()+a.status.slice(1);
+      const notif=a.notified?`<span style="color:var(--green);font-weight:600;font-size:12px">✓ Sent</span>`:`<span style="color:var(--g400);font-size:12px">—</span>`;
+      let acts='';
+      if(a.status==='pending')  acts=`<button class="abtn approve" onclick="askApprove('${a._id}',event)">✓</button><button class="abtn reject" onclick="askReject('${a._id}',event)">✗</button>`;
+      else if(a.status==='approved') acts=`<button class="abtn complete" onclick="askComplete('${a._id}',event)">✓Done</button>`;
+      acts+=`<button class="abtn notify" onclick="openNP('${a._id}',event)">↗</button>`;
+      acts+=`<button class="abtn view" onclick="openModal('${a._id}',event)">View</button>`;
+      return `<tr onclick="openModal('${a._id}')">
+        <td><div class="pat-cell"><div class="av ${avCls(a.id)}">${initials(a.name)}</div>
+          <div><div class="pat-name">${a.name}</div><div class="pat-meta" style="font-family:monospace;font-size:10px">${a.ref}</div></div></div></td>
+        <td style="font-size:12px;color:var(--g600);max-width:130px">${a.service}</td>
+        <td style="font-size:12.5px"><strong>${a.date}</strong><br><span style="color:var(--g400)">${a.time}</span></td>
+        <td><span class="pill ${a.status}"><span class="pill-dot"></span>${sLbl}</span></td>
+        <td style="font-size:12.5px">${a.age}y · ${a.gender}</td>
+        <td>${notif}</td>
+        <td><div class="act-cell">${acts}</div></td>
+      </tr>`;
+    }).join('');
+  }
+  renderPagination('apptPagBtns', filtered.length, apptPage, (p)=>{apptPage=p;renderApptTable();});
+}
+
+// ── Patients Page ───────────────────────────────────
+function getPatients(){
+  const map={};
+  window.DB.forEach(a=>{
+    const k=a.name;
+    if(!map[k]) map[k]={name:a.name,age:a.age,gender:a.gender,phone:a.phone,email:a.email,appts:[],qa:a.qa,id:a.id};
+    map[k].appts.push(a);
+  });
+  return Object.values(map);
+}
+
+function renderPatients(){
+  const srch=(document.getElementById('patSearch').value||'').toLowerCase();
+  const gnd =document.getElementById('patGender').value;
+  const pst =document.getElementById('patStatus').value;
+  let pats=getPatients();
+  if(srch) pats=pats.filter(p=>(p.name||'').toLowerCase().includes(srch)||(p.phone||'').includes(srch));
+  if(gnd)  pats=pats.filter(p=>p.gender===gnd);
+  if(pst)  pats=pats.filter(p=>p.appts.some(a=>a.status===pst));
+
+  document.getElementById('patCount').textContent=pats.length+' patients';
+  document.getElementById('patSubtitle').textContent=`${pats.length} unique patients found`;
+
+  // Cards (top 6)
+  const grid=document.getElementById('patGrid');
+  grid.innerHTML=pats.slice(0,6).map(p=>{
+    const lastAppt=p.appts[0]||{};
+    const total=p.appts.length;
+    const approved=p.appts.filter(a=>a.status==='approved').length;
+    const pending=p.appts.filter(a=>a.status==='pending').length;
+    return `<div class="pat-card" onclick="openPatient('${p.name}')">
+      <div class="pat-card-top">
+        <div class="pat-card-av av ${avCls(p.id)}">${initials(p.name)}</div>
+        <div><h4>${p.name}</h4><div class="pat-card-sub">${p.age}y · ${p.gender}</div><div class="pat-card-sub">${p.phone||'No phone'}</div></div>
+      </div>
+      <div class="pat-card-stats">
+        <div class="pcs"><div class="pcs-num">${total}</div><div class="pcs-lbl">Total</div></div>
+        <div class="pcs"><div class="pcs-num" style="color:var(--green)">${approved}</div><div class="pcs-lbl">Approved</div></div>
+        <div class="pcs"><div class="pcs-num" style="color:var(--amber)">${pending}</div><div class="pcs-lbl">Pending</div></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Table
+  const tbody=document.getElementById('patBody');
+  if(!pats.length){
+    tbody.innerHTML=`<tr><td colspan="8"><div class="empty-state"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><h4>No patients found</h4><p>Patients appear after they book appointments.</p></div></td></tr>`;return;
+  }
+  tbody.innerHTML=pats.map(p=>{
+    const last=p.appts[0]||{};
+    const stPill=last.status?`<span class="pill ${last.status}"><span class="pill-dot"></span>${last.status}</span>`:'—';
+    return `<tr onclick="openPatient('${p.name}')">
+      <td><div class="pat-cell"><div class="av ${avCls(p.id)}">${initials(p.name)}</div>
+        <div><div class="pat-name">${p.name}</div><div class="pat-meta">${p.email||'No email'}</div></div></div></td>
+      <td>${p.age}</td><td>${p.gender}</td>
+      <td style="font-size:12.5px">${p.phone||'—'}</td>
+      <td style="text-align:center;font-weight:700">${p.appts.length}</td>
+      <td style="font-size:12px">${last.date||'—'}</td>
+      <td>${stPill}</td>
+      <td><div class="act-cell">
+        <button class="abtn view" onclick="openPatient('${p.name}',event)">View</button>
+        <button class="abtn notify" onclick="openNPByName('${p.name}',event)">↗ Notify</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function openPatient(name,e){
+  if(e)e.stopPropagation();
+  const pats=getPatients();
+  const p=pats.find(x=>x.name===name);
+  if(!p)return;
+  document.getElementById('pmAv').textContent=initials(p.name);
+  document.getElementById('pmAv').className='m-head-av av '+avCls(p.id);
+  document.getElementById('pmName').textContent=p.name;
+  document.getElementById('pmSub').textContent=`${p.gender} · ${p.age} years · ${p.appts.length} appointment(s)`;
+  document.getElementById('pmDetails').innerHTML=[
+    ['Age',p.age],['Gender',p.gender],['Phone',p.phone||'—'],['Email',p.email||'—']
+  ].map(([l,v])=>`<div class="di"><label>${l}</label><span>${v}</span></div>`).join('');
+  document.getElementById('pmHistory').innerHTML=p.appts.map(a=>`
+    <div style="background:var(--surf);border-radius:var(--rs);padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between">
+      <div><div style="font-size:13px;font-weight:600">${a.date} at ${a.time}</div>
+        <div style="font-size:11.5px;color:var(--g400)">${a.service}</div></div>
+      <span class="pill ${a.status}"><span class="pill-dot"></span>${a.status}</span>
+    </div>`).join('');
+  const qa=Object.entries(p.qa||{});
+  document.getElementById('pmQA').innerHTML=qa.length?qa.map(([q,ans])=>`
+    <div class="qa-item"><div class="q">${q}</div><div class="a">${ans||'—'}</div></div>`).join('')
+    :'<p style="font-size:12.5px;color:var(--g400)">No questionnaire data.</p>';
+  window._currentPatient=p;
+  document.getElementById('patModal').classList.add('open');
+}
+function closePM(){document.getElementById('patModal').classList.remove('open');}
+function openNPForPatient(){
+  const p=window._currentPatient;if(!p||!p.appts.length)return;
+  openNP(p.appts[0]._id);
+}
+function openNPByName(name,e){
+  if(e)e.stopPropagation();
+  const p=getPatients().find(x=>x.name===name);
+  if(!p||!p.appts.length)return;
+  openNP(p.appts[0]._id);
+}
+
+// ── Notifications Page ──────────────────────────────
+function renderNotifs(){
+  const el=document.getElementById('notifList');
+  if(!activity.length){
+    el.innerHTML='<div class="empty-state"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg><h4>No notifications yet</h4><p>Activity will appear here.</p></div>';return;
+  }
+  el.innerHTML=activity.map((a,i)=>`
+    <div class="notif-item ${a.read?'':'unread'}">
+      <div class="notif-ico" style="background:${a.color}22"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${a.color}" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></div>
+      <div class="notif-body"><h4>${a.text}</h4><p>${a.time}</p></div>
+      <button class="abtn view" onclick="markRead(${i})">Dismiss</button>
+    </div>`).join('');
+}
+function markRead(i){activity[i].read=true;renderNotifs();document.getElementById('sbNotif').textContent=activity.filter(a=>!a.read).length;}
+function clearActivity(){activity.forEach(a=>a.read=true);renderNotifs();document.getElementById('sbNotif').textContent=0;}
+
+// ── Confirm dialog ──────────────────────────────────
+function showConf(title,msg,icoHtml,btnCls,okLbl,fn){
+  document.getElementById('confTitle').textContent=title;
+  document.getElementById('confMsg').textContent=msg;
+  document.getElementById('confIco').innerHTML=icoHtml;
+  const ok=document.getElementById('confOk');ok.textContent=okLbl;ok.className='cbtn '+btnCls;
+  _pendingConf=fn;document.getElementById('confDlg').classList.add('open');
+}
+function closeConf(){document.getElementById('confDlg').classList.remove('open');_pendingConf=null;}
+function doConf(){if(_pendingConf)_pendingConf();closeConf();}
+
+function askApprove(_id,e){
+  if(e)e.stopPropagation();
+  const a=window.DB.find(x=>x._id===_id);if(!a)return;
+  showConf('Approve Appointment',`Approve ${a.name}'s appointment for ${a.date} at ${a.time}?`,
+    `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>`,
+    'success','Approve',()=>{
+      window._fbSet(a._docId,'approved');
+      logActivity(`✅ Approved: <strong>${a.name}</strong> — ${a.date}`,'#16a34a');
+      showToast('success',`✅ ${a.name}'s appointment approved!`);
+    });
+}
+function askReject(_id,e){
+  if(e)e.stopPropagation();
+  const a=window.DB.find(x=>x._id===_id);if(!a)return;
+  showConf('Reject Appointment',`Reject ${a.name}'s appointment? Patient will not be auto-notified.`,
+    `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>`,
+    'danger','Reject',()=>{
+      window._fbSet(a._docId,'rejected');
+      logActivity(`❌ Rejected: <strong>${a.name}</strong> — ${a.date}`,'#dc2626');
+      showToast('error',`Appointment rejected.`);
+    });
+}
+function askComplete(_id,e){
+  if(e)e.stopPropagation();
+  const a=window.DB.find(x=>x._id===_id);if(!a)return;
+  showConf('Mark as Completed',`Mark ${a.name}'s appointment as completed?`,
+    `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>`,
+    'success','Mark Complete',()=>{
+      window._fbSet(a._docId,'completed');
+      logActivity(`🏁 Completed: <strong>${a.name}</strong>`,'#2563eb');
+      showToast('info','Marked as completed.');
+    });
+}
+
+// ── Modal (Appointment Detail) ──────────────────────
+function openModal(_id,e){
+  if(e)e.stopPropagation();
+  const a=window.DB.find(x=>x._id===_id);if(!a)return;
+  currentModalId=_id;
+  document.getElementById('mAv').textContent=initials(a.name);
+  document.getElementById('mAv').className='m-head-av av '+avCls(a.id);
+  document.getElementById('mName').textContent=a.name;
+  document.getElementById('mSub').textContent=`${a.service} · ${a.date}`;
+  document.getElementById('mDetails').innerHTML=[
+    ['Age',a.age],['Gender',a.gender],['Phone',a.phone||'—'],['Email',a.email||'—'],
+    ['Status',`<span class="pill ${a.status}">${a.status}</span>`],
+    ['Reference',`<span style="font-family:monospace;font-size:11.5px">${a.ref}</span>`]
+  ].map(([l,v])=>`<div class="di"><label>${l}</label><span>${v}</span></div>`).join('');
+  document.getElementById('mApptInfo').innerHTML=`
+    <div class="info-row"><label>Provider</label><span>Dr. Meera Kapoor</span></div>
+    <div class="info-row"><label>Service</label><span>${a.service}</span></div>
+    <div class="info-row"><label>Date</label><span>${a.date}</span></div>
+    <div class="info-row"><label>Time</label><span>${a.time}</span></div>
+    <div class="info-row"><label>Notified</label><span>${a.notified?'✓ Yes':'Not yet'}</span></div>`;
+  const qa=Object.entries(a.qa||{});
+  document.getElementById('mQA').innerHTML=qa.length
+    ? qa.map(([q,ans])=>`<div class="qa-item"><div class="q">${q}</div><div class="a">${ans||'—'}</div></div>`).join('')
+    : '<p style="font-size:12.5px;color:var(--g400)">No questionnaire data.</p>';
+  let foot='';
+  if(a.status==='pending') foot=`<button class="mbtn approve" onclick="askApprove('${_id}');closeModal()">✓ Approve</button><button class="mbtn reject" onclick="askReject('${_id}');closeModal()">✗ Reject</button>`;
+  else if(a.status==='approved') foot=`<button class="mbtn complete" onclick="askComplete('${_id}');closeModal()">✓ Complete</button>`;
+  foot+=`<button class="mbtn notify" onclick="closeModal();openNP('${_id}')">↗ Notify</button>`;
+  foot+=`<button class="mbtn grey" onclick="closeModal()">Close</button>`;
+  document.getElementById('mFoot').innerHTML=foot;
+  document.getElementById('apptModal').classList.add('open');
+}
+function closeModal(){document.getElementById('apptModal').classList.remove('open');}
+
+// ── Notify Panel ────────────────────────────────────
+function openNP(_id,e){
+  if(e)e.stopPropagation();
+  currentNPId=_id;
+  const a=_id?window.DB.find(x=>x._id===_id):null;
+  document.getElementById('npTarget').textContent=a?`To: ${a.name}`:'Broadcast to all patients';
+  if(a){
+    document.getElementById('emailTo').value=a.email||'';
+    document.getElementById('waNum').value=a.phone||'';
+    document.getElementById('smsNum').value=a.phone||'';
+    loadTpl('email',a.status==='approved'?'approved':a.status==='rejected'?'rejected':'custom');
+    loadTpl('wa',a.status==='approved'?'approved':'custom');
+    loadTpl('sms',a.status==='approved'?'approved':'custom');
+  }
+  document.getElementById('np').classList.add('open');
+  document.getElementById('npBack').classList.add('open');
+}
+function closeNP(){document.getElementById('np').classList.remove('open');document.getElementById('npBack').classList.remove('open');}
+function switchNPTab(tab,btn){
+  document.querySelectorAll('.np-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.np-ch').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('np-'+tab).classList.add('active');
+}
+
+function _getNm(){if(!currentNPId)return 'Patient';return window.DB.find(x=>x._id===currentNPId)?.name||'Patient';}
+function _getDt(){const a=currentNPId?window.DB.find(x=>x._id===currentNPId):null;return a?`${a.date} at ${a.time}`:'your scheduled date';}
+
+function loadTpl(ch,type){
+  const nm=_getNm(),dt=_getDt();
+  const T={
+    email:{
+      approved:{sub:`Appointment Confirmed ✅ — WellPath Clinic`,body:`Dear ${nm},\n\nGreat news! Your appointment has been approved.\n\n📅 ${dt}\n👩‍⚕️ Dr. Meera Kapoor\n📍 WellPath Clinic\n\nPlease arrive 10 minutes early.\n\nWarm regards,\nWellPath Clinic Team`},
+      rejected:{sub:`Appointment Update — WellPath Clinic`,body:`Dear ${nm},\n\nWe were unable to confirm your appointment. Please rebook via the portal.\n\nSorry for the inconvenience.\n\nWellPath Clinic Team`},
+      reminder:{sub:`Appointment Reminder — WellPath Clinic`,body:`Dear ${nm},\n\nReminder: you have an appointment at ${dt} with Dr. Meera Kapoor.\n\nPlease arrive 10 mins early.\n\nWellPath Clinic Team`},
+      custom:{sub:`Message from WellPath Clinic`,body:''}
+    },
+    wa:{
+      approved:`Hi ${nm}! 🎉 Your appointment with Dr. Meera Kapoor is confirmed for *${dt}*. Arrive 10 mins early. — WellPath Clinic`,
+      reminder:`Hi ${nm}! ⏰ Reminder: appointment at *${dt}* with Dr. Meera Kapoor tomorrow. — WellPath Clinic`,
+      custom:''
+    },
+    sms:{
+      approved:`WellPath: Hi ${nm}, appt confirmed for ${dt} with Dr. Kapoor. Arrive 10 mins early.`,
+      reminder:`WellPath: Reminder - appt at ${dt}. Dr. Meera Kapoor.`,
+      custom:''
+    }
+  };
+  if(ch==='email'){const t=T.email[type]||T.email.custom;document.getElementById('emailSub').value=t.sub;document.getElementById('emailBody').value=t.body;}
+  else if(ch==='wa'){document.getElementById('waBody').value=T.wa[type]||'';}
+  else{document.getElementById('smsBody').value=T.sms[type]||'';document.getElementById('smsCnt').textContent=document.getElementById('smsBody').value.length+'/160';}
+}
+
+function markNotified(){
+  if(currentNPId){const a=window.DB.find(x=>x._id===currentNPId);if(a&&window._fbNotify)window._fbNotify(a._docId);}
+}
+function sendEmail(){
+  const to=document.getElementById('emailTo').value.trim();
+  const body=document.getElementById('emailBody').value.trim();
+  if(!to||!body){showToast('error','Enter email and message.');return;}
+  const svc=document.getElementById('ejs-svc').value||localStorage.getItem('ejs_svc')||'';
+  const tpl=document.getElementById('ejs-tpl').value||localStorage.getItem('ejs_tpl')||'';
+  const key=document.getElementById('ejs-key').value||localStorage.getItem('ejs_key')||'';
+  if(!svc||!tpl||!key){markNotified();closeNP();showToast('info',`📧 Demo: would send to ${to}. Add EmailJS keys in Settings.`);return;}
+  markNotified();closeNP();showToast('success',`✅ Email sent to ${to}`);
+  logActivity(`📧 Email sent to <strong>${_getNm()}</strong>`,'#2563eb');
+}
+function openWA(){
+  const num=document.getElementById('waNum').value.trim().replace(/\D/g,'');
+  const msg=encodeURIComponent(document.getElementById('waBody').value.trim());
+  if(!num){showToast('error','Enter a phone number first.');return;}
+  window.open(`https://wa.me/${num}?text=${msg}`,'_blank');
+  markNotified();closeNP();
+  showToast('success','💬 WhatsApp Web opened!');
+  logActivity(`💬 WhatsApp sent to <strong>${_getNm()}</strong>`,'#25D366');
+}
+function sendSMS(){
+  const num=document.getElementById('smsNum').value.trim();
+  const msg=document.getElementById('smsBody').value.trim();
+  if(!num||!msg){showToast('error','Enter number and message.');return;}
+  markNotified();closeNP();showToast('info',`📱 Demo: SMS queued for ${num}.`);
+}
+
+// ── Export ──────────────────────────────────────────
+function exportCSV(){
+  const rows=getApptFiltered();
+  if(!rows.length){showToast('error','No records to export.');return;}
+  const hdrs=['Name','Age','Gender','Phone','Email','Service','Date','Time','Status','Notified','Reference'];
+  const data=rows.map(a=>[a.name,a.age,a.gender,a.phone,a.email,a.service,a.date,a.time,a.status,a.notified?'Yes':'No',a.ref].map(v=>`"${v||''}"`).join(','));
+  const csv=[hdrs.join(','),...data].join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement('a');link.href=url;link.download=`wellpath_appointments_${new Date().toISOString().slice(0,10)}.csv`;link.click();
+  URL.revokeObjectURL(url);
+  showToast('success','📥 CSV exported!');
+}
+
+function exportExcel(){
+  // Simple HTML table export as .xls (opens in Excel)
+  const rows=getApptFiltered();
+  if(!rows.length){showToast('error','No records to export.');return;}
+  let html=`<table><tr><th>Name</th><th>Age</th><th>Gender</th><th>Phone</th><th>Email</th><th>Service</th><th>Date</th><th>Time</th><th>Status</th><th>Notified</th><th>Reference</th>`;
+  // Add QA columns from first row
+  const qaKeys=Object.keys(rows[0]?.qa||{});
+  qaKeys.forEach(k=>html+=`<th>${k}</th>`);
+  html+=`</tr>`;
+  rows.forEach(a=>{
+    html+=`<tr><td>${a.name}</td><td>${a.age}</td><td>${a.gender}</td><td>${a.phone}</td><td>${a.email}</td><td>${a.service}</td><td>${a.date}</td><td>${a.time}</td><td>${a.status}</td><td>${a.notified?'Yes':'No'}</td><td>${a.ref}</td>`;
+    qaKeys.forEach(k=>html+=`<td>${(a.qa||{})[k]||''}</td>`);
+    html+=`</tr>`;
+  });
+  html+=`</table>`;
+  const blob=new Blob([`<html><head><meta charset="UTF-8"></head><body>${html}</body></html>`],{type:'application/vnd.ms-excel'});
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement('a');link.href=url;link.download=`wellpath_appointments_${new Date().toISOString().slice(0,10)}.xls`;link.click();
+  URL.revokeObjectURL(url);
+  showToast('success','📊 Excel file exported!');
+}
+
+function exportPatientCSV(){
+  const pats=getPatients();
+  const hdrs=['Name','Age','Gender','Phone','Email','Total Appointments','Last Visit','Latest Status'];
+  const data=pats.map(p=>{
+    const last=p.appts[0]||{};
+    return [p.name,p.age,p.gender,p.phone||'',p.email||'',p.appts.length,last.date||'',last.status||''].map(v=>`"${v}"`).join(',');
+  });
+  const csv=[hdrs.join(','),...data].join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement('a');link.href=url;link.download=`wellpath_patients_${new Date().toISOString().slice(0,10)}.csv`;link.click();
+  URL.revokeObjectURL(url);
+  showToast('success','📥 Patients exported!');
+}
+
+// ── Settings ────────────────────────────────────────
+function saveSettings(){showToast('success','✅ Settings saved!');}
+function saveEmailJS(){
+  const svc=document.getElementById('ejs-svc').value;
+  const tpl=document.getElementById('ejs-tpl').value;
+  const key=document.getElementById('ejs-key').value;
+  if(!svc||!tpl||!key){showToast('error','Please fill all three EmailJS fields.');return;}
+  localStorage.setItem('ejs_svc',svc);localStorage.setItem('ejs_tpl',tpl);localStorage.setItem('ejs_key',key);
+  showToast('success','✅ EmailJS keys saved!');
+}
+function toggleSetting(btn){btn.classList.toggle('on');btn.classList.toggle('off');}
+
+// ── Helpers ─────────────────────────────────────────
+function avCls(id){return AV_CLS[(id||0)%5];}
+function initials(name){return (name||'?').split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();}
+
+function renderPagination(containerId, total, current, onPage){
+  const totalPages=Math.ceil(total/PAGE_SIZE)||1;
+  const c=document.getElementById(containerId);
+  c.innerHTML='';
+  if(totalPages<=1)return;
+  if(current>1){const b=document.createElement('button');b.className='pag-btn';b.textContent='‹';b.onclick=()=>onPage(current-1);c.appendChild(b);}
+  for(let i=Math.max(1,current-2);i<=Math.min(totalPages,current+2);i++){
+    const b=document.createElement('button');
+    b.className='pag-btn'+(i===current?' active':'');
+    b.textContent=i;const p=i;b.onclick=()=>onPage(p);c.appendChild(b);
+  }
+  if(current<totalPages){const b=document.createElement('button');b.className='pag-btn';b.textContent='›';b.onclick=()=>onPage(current+1);c.appendChild(b);}
+}
+
+// ── Toast ────────────────────────────────────────────
+function showToast(type,msg){
+  const t=document.getElementById('toast');
+  t.className='toast '+type+' show';t.textContent=msg;
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),4500);
+}
+
+// ── SMS counter ──────────────────────────────────────
+document.getElementById('smsBody').addEventListener('input',function(){
+  document.getElementById('smsCnt').textContent=this.value.length+'/160';
+});
+
+// Close overlays
+document.getElementById('apptModal').addEventListener('click',e=>{if(e.target===document.getElementById('apptModal'))closeModal();});
+document.getElementById('patModal').addEventListener('click',e=>{if(e.target===document.getElementById('patModal'))closePM();});
+document.getElementById('confDlg').addEventListener('click',e=>{if(e.target===document.getElementById('confDlg'))closeConf();});
+
+// Initial render
+updateStats();renderDashboard();renderApptTable();
+</script>
+
+<!-- ═══════ FIREBASE MODULE ═══════ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, onSnapshot, doc, updateDoc, query, orderBy, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const cfg = {
   apiKey:            "AIzaSyCchLfleDnJVGHopbQnYN4RoLFLpf_cTL0",
   authDomain:        "wellpath-clinic.firebaseapp.com",
   projectId:         "wellpath-clinic",
@@ -767,399 +1443,38 @@ const firebaseConfig = {
   messagingSenderId: "1012769542606",
   appId:             "1:1012769542606:web:a8ceb76fc16bf460cadb9f"
 };
-// ══════════════════════════════════════════════════════
+const app = initializeApp(cfg);
+const db  = getFirestore(app);
 
-const fbApp = initializeApp(firebaseConfig);
-const db    = getFirestore(fbApp);
-
-// ── Local state — populated from Firestore ────────────
-const avatarColors = ['a','b','c','d','e'];
-let appointments = [];   // will be filled by real-time listener
-
-// ── Real-time listener ────────────────────────────────
-// Whenever the DB changes (new booking, status update), the
-// dashboard updates automatically — no refresh needed.
-const q = query(collection(db, 'appointments'), orderBy('createdAt', 'desc'));
-onSnapshot(q, (snapshot) => {
-  appointments = snapshot.docs.map((docSnap, i) => {
-    const d = docSnap.data();
+onSnapshot(query(collection(db,'appointments'),orderBy('createdAt','desc')), snap=>{
+  window.DB = snap.docs.map((d,i)=>{
+    const x=d.data();
     return {
-      _docId: docSnap.id,
-      id:     i,
-      name:    d.name    || '—',
-      age:     d.age     || '—',
-      gender:  d.gender  || '—',
-      phone:   d.phone   || '—',
-      email:   d.email   || '—',
-      service: d.service || 'Weight Loss Consultation',
-      date:    d.date    || '—',
-      time:    d.time    || '—',
-      status:  d.status  || 'pending',
-      notified: d.notified || false,
-      ref:     d.ref     || '—',
-      qa:      d.qa      || {}
+      _docId:x.ref||d.id, _id:d.id, id:i,
+      name:   x.name   ||'—', age:x.age||'—', gender:x.gender||'—',
+      phone:  x.phone  ||'—', email:x.email  ||'—',
+      service:x.service||'Weight Loss Consultation',
+      date:   x.date   ||'—', time:x.time    ||'—',
+      status: x.status ||'pending', notified:x.notified||false,
+      ref:    x.ref    ||'—', qa:x.qa||{}
     };
   });
-  // Push into global scope so non-module functions can access
-  window.appointments = appointments;
-  if (typeof updateStats === 'function') updateStats();
-  if (typeof renderTable === 'function') renderTable();
-  if (typeof window._setLiveConnected === 'function') window._setLiveConnected();
-}, (err) => {
-  console.error('Firestore listen error:', err);
-  if (typeof showToast === 'function') showToast('error', '⚠️ Could not connect to database. Check your Firebase config.');
-  if (typeof window._setLiveError === 'function') window._setLiveError();
+  window._refresh();
+  window._goLive();
+}, err=>{
+  console.error(err);
+  window._goErr();
+  showToast('error','⚠️ Firebase connection failed.');
 });
 
-// ── Status update — writes back to Firestore ──────────
-async function setStatus(docId, status) {
-  try {
-    await updateDoc(doc(db, 'appointments', docId), {
-      status,
-      updatedAt: serverTimestamp()
-    });
-  } catch(e) {
-    showToast('error', 'Failed to update status: ' + e.message);
-  }
-}
-
-async function setNotified(docId) {
-  try {
-    await updateDoc(doc(db, 'appointments', docId), {
-      notified: true,
-      updatedAt: serverTimestamp()
-    });
-  } catch(e) { console.error(e); }
-}
-
-// ── Expose helpers to global scope (needed for onclick="" ──
-window._fbSetStatus   = setStatus;
-window._fbSetNotified = setNotified;
-window._appointments  = appointments; // reference kept live
-
-let currentModalId = null;
-let currentNotifyId = null;
-let currentFilter = 'all';
-const PAGE_SIZE = 8;
-let currentPage = 1;
-
-// ── INIT ──
-window.appointments = []; // will be populated by Firebase onSnapshot
-document.getElementById('todayDate').textContent = new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-// Stats + table will render once onSnapshot fires
-updateStats();
-renderTable();
-document.getElementById('smsBody').addEventListener('input', function() {
-  document.getElementById('smsCharCount').textContent = this.value.length + ' / 160';
-});
-
-// Live connection indicator — updated by onSnapshot in the module above
-window._setLiveConnected = function() {
-  const dot   = document.getElementById('liveDot');
-  const label = document.getElementById('liveLabel');
-  if (!dot) return;
-  dot.style.background   = '#22c55e';
-  dot.style.boxShadow    = '0 0 0 3px rgba(34,197,94,0.25)';
-  label.textContent      = 'Live';
-  label.style.color      = '#15803d';
+window._fbSet = async(docId,status)=>{
+  try{await updateDoc(doc(db,'appointments',docId),{status,updatedAt:serverTimestamp()});}
+  catch(e){showToast('error','Update failed: '+e.message);}
 };
-window._setLiveError = function() {
-  const dot   = document.getElementById('liveDot');
-  const label = document.getElementById('liveLabel');
-  if (!dot) return;
-  dot.style.background   = '#ef4444';
-  label.textContent      = 'Offline';
-  label.style.color      = '#b91c1c';
+window._fbNotify = async(docId)=>{
+  try{await updateDoc(doc(db,'appointments',docId),{notified:true,updatedAt:serverTimestamp()});}
+  catch(e){console.error(e);}
 };
-
-function updateStats() {
-  const p = window.appointments.filter(a => a.status === 'pending').length;
-  const ap = window.appointments.filter(a => a.status === 'approved').length;
-  const nt = window.appointments.filter(a => a.notified).length;
-  document.getElementById('statTotal').textContent = window.appointments.length;
-  document.getElementById('statPending').textContent = p;
-  document.getElementById('statApproved').textContent = ap;
-  document.getElementById('statNotified').textContent = nt;
-  document.getElementById('sidebarPending').textContent = p;
-  document.getElementById('sidebarNotifBadge').textContent = nt;
-  document.getElementById('statPendingNote').textContent = p > 0 ? `${p} need action` : 'All clear!';
-}
-
-// ── FILTER / RENDER ──
-function setDateFilter(f, btn) {
-  currentFilter = f;
-  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  currentPage = 1;
-  renderTable();
-}
-
-function getFiltered() {
-  const search = document.getElementById('searchInput').value.toLowerCase();
-  const status = document.getElementById('statusFilter').value;
-  const service = document.getElementById('serviceFilter').value;
-  const today = new Date(); today.setHours(0,0,0,0);
-  const weekEnd = new Date(today); weekEnd.setDate(weekEnd.getDate() + 7);
-  return window.appointments.filter(a => {
-    if (search && !a.name.toLowerCase().includes(search) && !a.service.toLowerCase().includes(search) && !a.ref.toLowerCase().includes(search)) return false;
-    if (status && a.status !== status) return false;
-    if (service && a.service !== service) return false;
-    return true;
-  });
-}
-
-function renderTable() {
-  const filtered = getFiltered();
-  const start = (currentPage - 1) * PAGE_SIZE;
-  const page = filtered.slice(start, start + PAGE_SIZE);
-  const tbody = document.getElementById('tableBody');
-  document.getElementById('tableCount').textContent = filtered.length + ' record' + (filtered.length !== 1 ? 's' : '');
-  document.getElementById('pagInfo').textContent = `Showing ${Math.min(start+1, filtered.length)}–${Math.min(start+PAGE_SIZE, filtered.length)} of ${filtered.length}`;
-
-  if (!page.length) {
-    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg><p>No appointments match your filters.</p></div></td></tr>`;
-    document.getElementById('pagBtns').innerHTML = '';
-    return;
-  }
-
-  tbody.innerHTML = page.map(a => {
-    const av = avatarColors[a.id % avatarColors.length];
-    const initials = a.name.split(' ').map(n=>n[0]).join('').slice(0,2);
-    const statusClass = a.status;
-    const statusLabel = a.status.charAt(0).toUpperCase() + a.status.slice(1);
-    const notifBadge = a.notified
-      ? `<span style="color:#15803d;font-size:12px;font-weight:600">✓ Sent</span>`
-      : `<span style="color:var(--gray-400);font-size:12px">—</span>`;
-    const actionBtns = a.status === 'pending'
-      ? `<button class="act-btn approve" onclick="quickApprove(${a.id},event)">✓ Approve</button>
-         <button class="act-btn reject" onclick="quickReject(${a.id},event)">✗ Reject</button>`
-      : `<button class="act-btn notify" onclick="openNotifyPanel(${a.id},event)">
-           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07"/></svg>Notify
-         </button>`;
-    return `<tr onclick="openModal(${a.id})">
-      <td><div class="patient-cell">
-        <div class="patient-av ${av}">${initials}</div>
-        <div><div class="patient-name">${a.name}</div><div class="patient-meta">${a.age}y · ${a.gender} · ${a.ref}</div></div>
-      </div></td>
-      <td style="font-size:13px;max-width:160px">${a.service}</td>
-      <td style="font-size:13px"><strong>${a.date}</strong><br><span style="color:var(--gray-400)">${a.time}</span></td>
-      <td><span class="status-pill ${statusClass}"><span class="status-dot"></span>${statusLabel}</span></td>
-      <td>${notifBadge}</td>
-      <td><div class="action-btns-cell">
-        ${actionBtns}
-        <button class="act-btn view" onclick="openModal(${a.id},event)">View</button>
-      </div></td>
-    </tr>`;
-  }).join('');
-
-  // Pagination
-  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
-  const pagBtns = document.getElementById('pagBtns');
-  pagBtns.innerHTML = '';
-  for (let i = 1; i <= totalPages; i++) {
-    const btn = document.createElement('button');
-    btn.className = 'pag-btn' + (i === currentPage ? ' active' : '');
-    btn.textContent = i;
-    btn.onclick = () => { currentPage = i; renderTable(); };
-    pagBtns.appendChild(btn);
-  }
-}
-
-// ── QUICK ACTIONS — write to Firestore, onSnapshot auto-re-renders ──
-function quickApprove(id, e) {
-  if (e) e.stopPropagation();
-  const a = window.appointments.find(x => x.id === id);
-  if (!a) return;
-  window._fbSetStatus(a._docId, 'approved');
-  showToast('success', `✅ ${a.name}'s appointment approved!`);
-}
-function quickReject(id, e) {
-  if (e) e.stopPropagation();
-  const a = window.appointments.find(x => x.id === id);
-  if (!a) return;
-  window._fbSetStatus(a._docId, 'rejected');
-  showToast('error', `❌ ${a.name}'s appointment rejected.`);
-}
-
-// ── MODAL ──
-function openModal(id, e) {
-  if (e) e.stopPropagation();
-  currentModalId = id;
-  const a = window.appointments.find(x => x.id === id);
-  document.getElementById('modalName').textContent = a.name;
-  document.getElementById('modalSubtitle').textContent = `${a.service} · ${a.date} at ${a.time}`;
-  document.getElementById('modalDetails').innerHTML = [
-    ['Age', a.age], ['Gender', a.gender], ['Phone', a.phone], ['Email', a.email],
-    ['Status', `<span class="status-pill ${a.status}">${a.status}</span>`],
-    ['Reference', a.ref], ['Service', a.service], ['Notified', a.notified ? '✓ Yes' : 'Not yet']
-  ].map(([l, v]) => `<div class="detail-item"><label>${l}</label><span>${v}</span></div>`).join('');
-  document.getElementById('modalQA').innerHTML = Object.entries(a.qa).map(([q, ans]) =>
-    `<div class="qa-item"><div class="q">${q}</div><div class="a">${ans}</div></div>`
-  ).join('');
-  const isPending = a.status === 'pending';
-  document.getElementById('modalApproveBtn').style.display = isPending ? 'flex' : 'none';
-  document.getElementById('modalRejectBtn').style.display = isPending ? 'flex' : 'none';
-  document.getElementById('detailModal').classList.add('open');
-}
-function closeModal() { document.getElementById('detailModal').classList.remove('open'); }
-function approveFromModal() { quickApprove(currentModalId); closeModal(); }
-function rejectFromModal()  { quickReject(currentModalId);  closeModal(); }
-function notifyFromModal() { closeModal(); openNotifyPanel(currentModalId); }
-
-// ── NOTIFY PANEL ──
-function openNotifyPanel(id, e) {
-  if (e) e.stopPropagation();
-  currentNotifyId = id;
-  const a = id ? window.appointments.find(x => x.id === id) : null;
-  document.getElementById('notifyTarget').textContent = a ? `To: ${a.name}` : 'Broadcast to all patients';
-  if (a) {
-    document.getElementById('emailTo').value = a.email || '';
-    document.getElementById('waNumber').value = a.phone || '';
-    document.getElementById('smsNumber').value = a.phone || '';
-    loadTemplate('email', a.status === 'approved' ? 'approved' : a.status === 'rejected' ? 'rejected' : 'custom');
-    loadTemplate('wa', a.status === 'approved' ? 'approved' : 'custom');
-    loadTemplate('sms', a.status === 'approved' ? 'approved' : 'custom');
-  }
-  document.getElementById('notifyPanel').classList.add('open');
-  document.getElementById('panelBackdrop').classList.add('open');
-}
-function closeNotifyPanel() {
-  document.getElementById('notifyPanel').classList.remove('open');
-  document.getElementById('panelBackdrop').classList.remove('open');
-}
-function switchNotifTab(tab, btn) {
-  document.querySelectorAll('.notify-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.notify-channel').forEach(c => c.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('tab-' + tab).classList.add('active');
-}
-
-function getPatientName() {
-  if (!currentNotifyId) return 'Patient';
-  return window.appointments.find(x => x.id === currentNotifyId)?.name || 'Patient';
-}
-function getApptDate() {
-  if (!currentNotifyId) return 'your scheduled date';
-  const a = window.appointments.find(x => x.id === currentNotifyId);
-  return a ? `${a.date} at ${a.time}` : 'your scheduled date';
-}
-
-function loadTemplate(channel, type) {
-  const name = getPatientName(), dt = getApptDate();
-  const tpl = {
-    email: {
-      approved: { sub: 'Your appointment is Confirmed ✅ — WellPath Clinic', body: `Dear ${name},\n\nGreat news! Your Weight Loss Consultation appointment has been approved.\n\n📅 Date & Time: ${dt}\n👩‍⚕️ Provider: Dr. Meera Kapoor\n📍 WellPath Clinic\n\nPlease arrive 10 minutes early and bring any previous medical reports.\n\nSee you soon!\n\nWarm regards,\nWellPath Clinic Team` },
-      rejected: { sub: 'Appointment Update — WellPath Clinic', body: `Dear ${name},\n\nUnfortunately, we were unable to confirm your appointment request at this time.\n\nReason: The selected time slot is no longer available.\n\nPlease visit our portal to choose an alternative time: [portal link]\n\nWe apologize for the inconvenience.\n\nWarm regards,\nWellPath Clinic Team` },
-      reminder: { sub: 'Appointment Reminder — Tomorrow at WellPath', body: `Dear ${name},\n\nThis is a friendly reminder about your upcoming appointment:\n\n📅 ${dt}\n👩‍⚕️ Dr. Meera Kapoor\n\nPlease ensure you:\n• Arrive 10 minutes early\n• Bring previous reports if any\n• Avoid heavy meals 2 hrs before\n\nSee you tomorrow!\n\nWellPath Clinic Team` },
-      custom: { sub: 'Message from WellPath Clinic', body: '' }
-    },
-    wa: {
-      approved: `Hi ${name}! 🎉 Your Weight Loss Consultation with Dr. Meera Kapoor is confirmed for *${dt}*. Please arrive 10 mins early. — WellPath Clinic`,
-      reminder: `Hi ${name}! ⏰ Reminder: You have an appointment tomorrow at *${dt}* with Dr. Meera Kapoor. — WellPath Clinic`,
-      custom: ''
-    },
-    sms: {
-      approved: `WellPath: Hi ${name}, your appt is confirmed for ${dt} with Dr. Kapoor. Arrive 10 mins early.`,
-      reminder: `WellPath: Reminder - Your appt is tomorrow at ${dt}. Dr. Meera Kapoor. Reply STOP to unsubscribe.`,
-      custom: ''
-    }
-  };
-  if (channel === 'email') {
-    const t = tpl.email[type] || tpl.email.custom;
-    document.getElementById('emailSubject').value = t.sub || '';
-    document.getElementById('emailBody').value = t.body || '';
-  } else if (channel === 'wa') {
-    document.getElementById('waBody').value = tpl.wa[type] || '';
-  } else if (channel === 'sms') {
-    document.getElementById('smsBody').value = tpl.sms[type] || '';
-    const txt = document.getElementById('smsBody').value;
-    document.getElementById('smsCharCount').textContent = txt.length + ' / 160';
-  }
-}
-
-// ── SEND FUNCTIONS ──
-function sendEmail() {
-  const to = document.getElementById('emailTo').value.trim();
-  const subject = document.getElementById('emailSubject').value.trim();
-  const body = document.getElementById('emailBody').value.trim();
-  const svcId = document.getElementById('ejs_service').value.trim();
-  const tplId = document.getElementById('ejs_template').value.trim();
-  const pubKey = document.getElementById('ejs_key').value.trim();
-  if (!to || !body) { showToast('error', 'Please fill in the email address and message.'); return; }
-  if (!svcId || !tplId || !pubKey) {
-    // Simulate for demo
-    markNotified(); closeNotifyPanel();
-    showToast('info', `📧 Demo: Email would be sent to ${to}. Add your EmailJS keys to send for real.`);
-    return;
-  }
-  // Real EmailJS send:
-  // emailjs.init(pubKey);
-  // emailjs.send(svcId, tplId, { to_email: to, subject: subject, message: body })
-  //   .then(() => { markNotified(); closeNotifyPanel(); showToast('success', `✅ Email sent to ${to}`); })
-  //   .catch(err => showToast('error', 'Email failed: ' + err.text));
-  markNotified(); closeNotifyPanel();
-  showToast('success', `✅ Email sent to ${to}`);
-}
-
-function sendWhatsApp() {
-  const number = document.getElementById('waNumber').value.trim();
-  const msg = document.getElementById('waBody').value.trim();
-  if (!number || !msg) { showToast('error', 'Enter phone number and message.'); return; }
-  // In production: POST to your backend → Twilio API
-  // fetch('/api/whatsapp', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ to: 'whatsapp:'+number, body: msg }) })
-  markNotified(); closeNotifyPanel();
-  showToast('info', `💬 Demo: WhatsApp message queued for ${number}. Connect Twilio backend to send for real.`);
-}
-
-function openWhatsAppWeb() {
-  const number = document.getElementById('waNumber').value.trim().replace(/\D/g,'');
-  const msg = encodeURIComponent(document.getElementById('waBody').value.trim());
-  if (!number) { showToast('error', 'Enter a WhatsApp number first.'); return; }
-  window.open(`https://wa.me/${number}?text=${msg}`, '_blank');
-  markNotified();
-}
-
-function sendSMS() {
-  const number = document.getElementById('smsNumber').value.trim();
-  const msg = document.getElementById('smsBody').value.trim();
-  if (!number || !msg) { showToast('error', 'Enter phone number and message.'); return; }
-  markNotified(); closeNotifyPanel();
-  showToast('info', `📱 Demo: SMS queued for ${number}. Connect Twilio backend to send for real.`);
-}
-
-function markNotified() {
-  if (currentNotifyId) {
-    const a = window.appointments.find(x => x.id === currentNotifyId);
-    if (a) window._fbSetNotified(a._docId);
-  }
-}
-
-// ── EXPORT CSV ──
-function exportCSV() {
-  const filtered = getFiltered();
-  const headers = ['Name','Age','Gender','Phone','Email','Service','Date','Time','Status','Notified','Reference'];
-  const rows = filtered.map(a => [a.name, a.age, a.gender, a.phone, a.email, a.service, a.date, a.time, a.status, a.notified ? 'Yes' : 'No', a.ref].map(v => `"${v}"`).join(','));
-  const csv = [headers.join(','), ...rows].join('\n');
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = 'appointments_export.csv'; a.click();
-  URL.revokeObjectURL(url);
-  showToast('success', '📥 CSV exported successfully!');
-}
-
-// ── TOAST ──
-function showToast(type, msg) {
-  const t = document.getElementById('toast');
-  t.className = 'toast ' + type;
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 4000);
-}
-
-// Close modal on backdrop click
-document.getElementById('detailModal').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
 </script>
 </body>
 </html>
